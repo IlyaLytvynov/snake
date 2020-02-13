@@ -12,26 +12,42 @@ export const DIRECTIONS = {
 };
 
 export class Snake {
-  static create(canvas, cellSize, dir = DIRECTIONS.RIGHT) {
-    const snake = new Snake(canvas, cellSize, dir);
+  static create(canvas, cellSize, onMove, onSelfCollision, dir) {
+    const snake = new Snake(canvas, cellSize, onMove, onSelfCollision, dir);
     snake.render();
     return snake;
   }
-  constructor(canvas, cellSize, onMove, direction = DIRECTIONS.RIGHT) {
+  constructor(
+    canvas,
+    cellSize,
+    onMove,
+    onSelfCollision,
+    direction = DIRECTIONS.RIGHT
+  ) {
     this._canvas = canvas;
     this._cellSize = cellSize;
     this._length = 2;
-    this._direction = DIRECTIONS.RIGHT;
-    this._onMove = onMove;
+    this._direction = direction;
     this._segments = [];
+    this._collision = false;
+
+    this.onMove = onMove;
+    this.onSelfCollision = onSelfCollision;
   }
   /**
    * @param {string} dir
    */
-  set direction(dir) {
+  setDirection(dir) {
     if (this.isNewDirectionValid(dir)) {
       this._direction = dir;
     }
+  }
+
+  /**
+   * @param {boolean} collision
+   * */
+  setCollision(collision) {
+    this._collision = collision;
   }
 
   /**
@@ -55,14 +71,7 @@ export class Snake {
 
   renderSegment(col, row) {
     const { w, h } = this._cellSize;
-    const segment = Cell.createWithColor(
-      this._canvas,
-      col,
-      row,
-      w,
-      h,
-      col === this._length - 1 ? 'red' : 'aqua'
-    );
+    const segment = Cell.createWithColor(this._canvas, col, row, w, h, 'aqua');
     segment.render();
     return segment;
   }
@@ -90,8 +99,10 @@ export class Snake {
         col = this._head.col + 1;
         row = this._head.row;
     }
-    this._onMove(col, row);
-    this._segments.push(this.renderSegment(col, row));
+    this.onMove(col, row);
+    if (!this._collision) {
+      this._segments.push(this.renderSegment(col, row));
+    }
   }
 
   /**

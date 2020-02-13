@@ -45,6 +45,26 @@ export class Stage {
     return { w: this._cellW, h: this._cellH };
   }
 
+  get appleCoords() {
+    return this._appleCoords;
+  }
+  /**
+   *
+   * @param {Object} coords
+   * @param {number} coords.col
+   * @param {number} coords.row
+   */
+  renderApple({ col, row }) {
+    Cell.createWithColor(
+      this._canvas,
+      col,
+      row,
+      this._cellW,
+      this._cellH,
+      'red'
+    );
+  }
+
   /**
    * @returns {DOMElement}
    */
@@ -62,8 +82,7 @@ export class Stage {
   drawField() {
     for (let row = 0; row < this.heightInCells; row++) {
       for (let col = 0; col < this.widthInCells; col++) {
-        const cell = new Cell(this._canvas, col, row, this._cellW, this._cellH);
-        cell.render();
+        Cell.create(this._canvas, col, row, this._cellW, this._cellH);
       }
     }
   }

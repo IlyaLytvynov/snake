@@ -17,12 +17,25 @@ export class Game {
    */
   constructor(mp) {
     this._mp = mp;
+    this.appleCoords = { col: 5, row: 5 };
+  }
+
+  getRandomCell() {
+    const col = Math.ceil(Math.random() * this._stage.widthInCells);
+    const row = Math.ceil(Math.random() * this._stage.heightInCells);
+    return { col, row };
   }
 
   init() {
     this.initStage();
     this.initSnake();
+    this.initApple();
     this.addEventListeners();
+  }
+
+  initApple() {
+    this._appleCoords = this.getRandomCell();
+    this._stage.renderApple(this._appleCoords);
   }
 
   initStage() {
@@ -38,6 +51,7 @@ export class Game {
 
   stopGame() {
     clearInterval(this.intervalId);
+    this._snake.setCollision(true);
     console.log('GAME OVER');
   }
 
@@ -64,7 +78,7 @@ export class Game {
   }
 
   setDirection(dir) {
-    this._snake.direction = dir;
+    this._snake.setDirection(dir);
   }
 
   addEventListeners() {
