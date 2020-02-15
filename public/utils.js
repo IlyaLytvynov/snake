@@ -1,7 +1,7 @@
 export const getCellColor = col => {
-  let color = 'yellow';
+  let color = 'white';
   if (col % 2 === 0) {
-    color = 'green';
+    color = 'white';
   }
   return color;
 };

@@ -12,8 +12,9 @@ export const DIRECTIONS = {
 };
 
 export class Snake {
-  static create(canvas, cellSize, onMove, onSelfCollision, dir) {
-    const snake = new Snake(canvas, cellSize, onMove, onSelfCollision, dir);
+  static create(canvas, cellSize, onMove, dir) {
+    const snake = new Snake(canvas, cellSize, onMove, dir);
+    snake.init();
     snake.render();
     return snake;
   }
@@ -28,11 +29,37 @@ export class Snake {
     this._cellSize = cellSize;
     this._length = 2;
     this._direction = direction;
-    this._segments = [];
     this._collision = false;
 
     this.onMove = onMove;
     this.onSelfCollision = onSelfCollision;
+  }
+
+  get segments() {
+    return this._segments;
+  }
+
+  init() {
+    this._segments = [
+      this.createSegment(7, 5, true),
+      this.createSegment(6, 5),
+      this.createSegment(5, 5)
+    ];
+  }
+
+  checkSelfCollision() {
+    let hasCollision = false;
+    const head = this._segments[0];
+    for (let i = 1; i < this._segments.length; i++) {
+      if (
+        head.col === this._segments[i].col &&
+        head.row === this._segments[i].row
+      ) {
+        hasCollision = true;
+        break;
+      }
+    }
+    return hasCollision;
   }
   /**
    * @param {string} dir
@@ -41,6 +68,11 @@ export class Snake {
     if (this.isNewDirectionValid(dir)) {
       this._direction = dir;
     }
+  }
+
+  grow() {
+    const { col, row } = this.getNewHeadCoordinates();
+    this._segments.unshift(this.createSegment(col, row));
   }
 
   /**
@@ -53,56 +85,57 @@ export class Snake {
   /**
    * @return {Cell}
    */
-  get _head() {
-    return this._segments[this._segments.length - 1];
-  }
-  /**
-   * @return {Cell}
-   */
-  get _tail() {
+  get head() {
     return this._segments[0];
   }
 
   render() {
-    for (let i = 0; i < this._length; i++) {
-      this._segments.push(this.renderSegment(i, 0));
-    }
+    this._segments.forEach(segment => {
+      segment.render();
+    });
   }
 
-  renderSegment(col, row) {
+  createSegment(col, row, isHead) {
     const { w, h } = this._cellSize;
-    const segment = Cell.createWithColor(this._canvas, col, row, w, h, 'aqua');
-    segment.render();
+    const segment = Cell.createWithColor(
+      this._canvas,
+      col,
+      row,
+      w,
+      h,
+      isHead ? 'yellow' : 'aqua'
+    );
     return segment;
   }
 
   move() {
-    this._tail.clear();
-    this._segments.shift();
-    let col;
-    let row;
+    const { col, row } = this.getNewHeadCoordinates();
+    this.moveHead(col, row);
+    this.onMove();
+  }
+
+  moveHead(col, row) {
+    this._segments.unshift(this.createSegment(col, row));
+    this._segments.pop();
+  }
+
+  getNewHeadCoordinates() {
+    let { col, row } = this.head;
     switch (this._direction) {
       case DIRECTIONS.TOP:
-        col = this._head.col;
-        row = this._head.row - 1;
+        row = row - 1;
         break;
       case DIRECTIONS.LEFT:
-        col = this._head.col - 1;
-        row = this._head.row;
+        col = col - 1;
         break;
       case DIRECTIONS.BOTTOM:
-        col = this._head.col;
-        row = this._head.row + 1;
+        row = row + 1;
         break;
-      case DIRECTIONS.RIGHT:
       default:
-        col = this._head.col + 1;
-        row = this._head.row;
+        col = col + 1;
     }
-    this.onMove(col, row);
-    if (!this._collision) {
-      this._segments.push(this.renderSegment(col, row));
-    }
+
+    return { col, row };
   }
 
   /**

@@ -13,7 +13,9 @@ export class Stage {
    * @param {Number} height
    */
   static create(mp, w = 640, h = 640) {
-    return new Stage(mp, w, h);
+    const stage = new Stage(mp, w, h);
+    stage.init();
+    return stage;
   }
 
   /**
@@ -22,8 +24,8 @@ export class Stage {
    * @param {Number} height
    */
   constructor(mp, width, height) {
-    this._cellW = 32;
-    this._cellH = 32;
+    this._cellW = 16;
+    this._cellH = 16;
 
     this._mp = mp;
     this._width = width;
@@ -45,8 +47,12 @@ export class Stage {
     return { w: this._cellW, h: this._cellH };
   }
 
-  get appleCoords() {
-    return this._appleCoords;
+  get apple() {
+    return this._apple;
+  }
+
+  checkApple(col, row) {
+    return this._apple.col === col && this._apple.row === row;
   }
   /**
    *
@@ -55,7 +61,7 @@ export class Stage {
    * @param {number} coords.row
    */
   renderApple({ col, row }) {
-    Cell.createWithColor(
+    this._apple = Cell.createWithColor(
       this._canvas,
       col,
       row,
@@ -68,15 +74,18 @@ export class Stage {
   /**
    * @returns {DOMElement}
    */
-  render() {
+  init() {
     this._canvas = document.createElement('canvas');
     this._canvas.width = this._width;
     this._canvas.height = this._height;
     this._canvas.style.border = '1px solid red';
 
     this._mp.appendChild(this._canvas);
-    this.drawField();
     return this._canvas;
+  }
+
+  render() {
+    this.drawField();
   }
 
   drawField() {

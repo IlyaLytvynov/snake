@@ -37,7 +37,7 @@ export class Cell {
 
   render() {
     this.drawRect();
-    this.ctx.strokeStyle = 'black';
+    this.ctx.strokeStyle = 'grey';
     this.ctx.strokeRect(this.x, this.y, this.w, this.h);
   }
 
@@ -51,6 +51,6 @@ export class Cell {
   }
 
   setDefaultColor() {
-    this.ctx.fillStyle = this.col % 2 === 0 ? 'green' : 'yellow';
+    this.ctx.fillStyle = this.col % 2 === 0 ? 'white' : 'white';
   }
 }

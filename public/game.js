@@ -17,58 +17,93 @@ export class Game {
    */
   constructor(mp) {
     this._mp = mp;
-    this.appleCoords = { col: 5, row: 5 };
+    window.game = this;
   }
 
   getRandomCell() {
-    const col = Math.ceil(Math.random() * this._stage.widthInCells);
-    const row = Math.ceil(Math.random() * this._stage.heightInCells);
+    const col = Math.ceil(Math.random() * this._stage.widthInCells - 1);
+    const row = Math.ceil(Math.random() * this._stage.heightInCells - 1);
     return { col, row };
   }
 
   init() {
-    this.initStage();
-    this.initSnake();
-    this.initApple();
+    this.createStage();
+    this.setAppleCoords();
+    this.renderStage();
+    this.renderApple();
+    this.renderSnake();
     this.addEventListeners();
   }
 
-  initApple() {
+  setAppleCoords() {
     this._appleCoords = this.getRandomCell();
-    this._stage.renderApple(this._appleCoords);
   }
 
-  initStage() {
+  createStage() {
     this._stage = Stage.create(this._mp);
-    this._stage.render();
   }
 
   startGame() {
     this.intervalId = setInterval(() => {
-      this._snake.move();
-    }, 800);
+      this.gameFrame();
+    }, 300);
+  }
+
+  gameFrame() {
+    requestAnimationFrame(() => {
+      this.renderStage();
+      this.renderApple();
+      this.move();
+    });
+  }
+
+  renderStage() {
+    this._stage.render();
+  }
+
+  move() {
+    this._snake.move();
+    this._snake.render();
+  }
+
+  renderApple() {
+    this._stage.renderApple(this._appleCoords);
   }
 
   stopGame() {
     clearInterval(this.intervalId);
-    this._snake.setCollision(true);
     console.log('GAME OVER');
   }
 
-  initSnake() {
+  renderSnake() {
     const { canvas, cellSize } = this._stage;
     this._snake = Snake.create(canvas, cellSize, (col, row) =>
       this.onMove(col, row)
     );
   }
 
-  onMove(col, row) {
+  onMove() {
+    const { col, row } = this._snake.head;
     if (this.checkCollisions(col, row)) {
       this.stopGame();
     }
+    if (this.checkApple(col, row)) {
+      this._snake.grow();
+      this.setAppleCoords();
+    }
+  }
+
+  checkApple(col, row) {
+    return this._stage.checkApple(col, row);
   }
 
   checkCollisions(col, row) {
+    return (
+      this.checkStageCollision(col, row) || this._snake.checkSelfCollision()
+    );
+  }
+
+  checkStageCollision(col, row) {
     return (
       col >= this._stage.widthInCells ||
       row >= this._stage.heightInCells ||
