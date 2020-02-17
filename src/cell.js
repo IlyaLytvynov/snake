@@ -1,18 +1,18 @@
-import { getCellColor } from './utils.js';
-
 export class Cell {
-  static createWithColor(canvas, col, row, w, h, bgColor) {
-    const cell = new Cell(canvas, col, row, w, h);
+  static createWithColor({ canvas, col, row, w, h, bgColor }) {
+    const cell = new Cell({ canvas, col, row, w, h });
     cell.color = bgColor;
     cell.render();
     return cell;
   }
-  static create(canvas, col, row, w, h) {
-    const cell = new Cell(canvas, col, row, w, h);
+
+  static create({ canvas, col, row, w, h }) {
+    const cell = new Cell({ canvas, col, row, w, h });
     cell.render();
     return cell;
   }
-  constructor(canvas, col, row, w, h) {
+
+  constructor({ canvas, col, row, w, h }) {
     this.ctx = canvas.getContext('2d');
     this.w = w;
     this.h = h;
@@ -24,7 +24,8 @@ export class Cell {
     this.setDefaultColor();
   }
 
-  /***
+  /**
+   * *
    * @param {string} color
    */
   set color(color) {

@@ -12,19 +12,20 @@ export const DIRECTIONS = {
 };
 
 export class Snake {
-  static create(canvas, cellSize, onMove, dir) {
-    const snake = new Snake(canvas, cellSize, onMove, dir);
+  static create({ canvas, cellSize, onMove, dir }) {
+    const snake = new Snake({ canvas, cellSize, onMove, dir });
     snake.init();
     snake.render();
     return snake;
   }
-  constructor(
+
+  constructor({
     canvas,
     cellSize,
     onMove,
     onSelfCollision,
     direction = DIRECTIONS.RIGHT
-  ) {
+  }) {
     this._canvas = canvas;
     this._cellSize = cellSize;
     this._length = 2;
@@ -49,8 +50,8 @@ export class Snake {
 
   checkSelfCollision() {
     let hasCollision = false;
-    const head = this._segments[0];
-    for (let i = 1; i < this._segments.length; i++) {
+    const [head] = this._segments;
+    for (let i = 1; i < this._segments.length; i += 1) {
       if (
         head.col === this._segments[i].col &&
         head.row === this._segments[i].row
@@ -61,6 +62,7 @@ export class Snake {
     }
     return hasCollision;
   }
+
   /**
    * @param {string} dir
    */
@@ -77,7 +79,8 @@ export class Snake {
 
   /**
    * @param {boolean} collision
-   * */
+   *
+   */
   setCollision(collision) {
     this._collision = collision;
   }
@@ -95,16 +98,16 @@ export class Snake {
     });
   }
 
-  createSegment(col, row, isHead) {
+  createSegment(col, row) {
     const { w, h } = this._cellSize;
-    const segment = Cell.createWithColor(
-      this._canvas,
+    const segment = Cell.createWithColor({
+      canvas: this._canvas,
       col,
       row,
       w,
       h,
-      isHead ? 'yellow' : 'aqua'
-    );
+      bgColor: 'aqua'
+    });
     return segment;
   }
 
@@ -123,16 +126,16 @@ export class Snake {
     let { col, row } = this.head;
     switch (this._direction) {
       case DIRECTIONS.TOP:
-        row = row - 1;
+        row -= 1;
         break;
       case DIRECTIONS.LEFT:
-        col = col - 1;
+        col -= 1;
         break;
       case DIRECTIONS.BOTTOM:
-        row = row + 1;
+        row += 1;
         break;
       default:
-        col = col + 1;
+        col += 1;
     }
 
     return { col, row };

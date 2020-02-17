@@ -4,14 +4,38 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "webpack  --mode development -w",
+    "start:server": "node ./server.js",
+    "build": "webpack --mode production",
+    "dev": "webpack  --mode development -w",
+    "lint": "eslint src/**",
+    "test": "jest"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.17.1"
+    "@babel/polyfill": "^7.8.3"
   },
   "devDependencies": {
-    "jest": "^25.1.0"
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.8.4",
+    "@babel/preset-env": "^7.8.4",
+    "autoprefixer": "^9.7.4",
+    "babel-loader": "^8.0.6",
+    "css-loader": "^3.4.2",
+    "cssnano": "^4.1.10",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb": "^18.0.1",
+    "eslint-loader": "^3.0.3",
+    "express": "^4.17.1",
+    "jest": "^25.1.0",
+    "mini-css-extract-plugin": "^0.9.0",
+    "postcss": "^7.0.26",
+    "postcss-cssnext": "^3.1.0",
+    "postcss-import": "^12.0.1",
+    "postcss-loader": "^3.0.0",
+    "prettier-eslint": "^9.0.1",
+    "webpack": "^4.41.6",
+    "webpack-cli": "^3.3.11"
   }
 }

@@ -31,6 +31,7 @@ export class Stage {
     this._width = width;
     this._height = height;
   }
+
   get canvas() {
     return this._canvas;
   }
@@ -54,6 +55,7 @@ export class Stage {
   checkApple(col, row) {
     return this._apple.col === col && this._apple.row === row;
   }
+
   /**
    *
    * @param {Object} coords
@@ -61,14 +63,14 @@ export class Stage {
    * @param {number} coords.row
    */
   renderApple({ col, row }) {
-    this._apple = Cell.createWithColor(
-      this._canvas,
+    this._apple = Cell.createWithColor({
+      canvas: this._canvas,
       col,
       row,
-      this._cellW,
-      this._cellH,
-      'red'
-    );
+      w: this._cellW,
+      h: this._cellH,
+      bgColor: 'red'
+    });
   }
 
   /**
@@ -89,9 +91,15 @@ export class Stage {
   }
 
   drawField() {
-    for (let row = 0; row < this.heightInCells; row++) {
-      for (let col = 0; col < this.widthInCells; col++) {
-        Cell.create(this._canvas, col, row, this._cellW, this._cellH);
+    for (let row = 0; row < this.heightInCells; row += 1) {
+      for (let col = 0; col < this.widthInCells; col += 1) {
+        Cell.create({
+          canvas: this._canvas,
+          col,
+          row,
+          w: this._cellW,
+          h: this._cellH
+        });
       }
     }
   }

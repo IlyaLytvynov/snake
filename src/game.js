@@ -17,7 +17,13 @@ export class Game {
    */
   constructor(mp) {
     this._mp = mp;
+    this._score = 0;
+    this._speed = 600;
     window.game = this;
+  }
+
+  get gameSpeed() {
+    return this._speed;
   }
 
   getRandomCell() {
@@ -44,17 +50,28 @@ export class Game {
   }
 
   startGame() {
-    this.intervalId = setInterval(() => {
-      this.gameFrame();
-    }, 300);
+    this.i = 0;
+    this.requestFrame();
+  }
+
+  requestFrame() {
+    this.intervalId = requestAnimationFrame(() => {
+      console.group(this.i);
+      if (this.i < 10) {
+        // This.gameFrame();
+        this.requestFrame();
+      } else {
+        cancelAnimationFrame(this.intervalId);
+      }
+      this.i += 1;
+    });
   }
 
   gameFrame() {
-    requestAnimationFrame(() => {
-      this.renderStage();
-      this.renderApple();
-      this.move();
-    });
+    this.renderStage();
+    this.renderApple();
+    this.move();
+    this.gameFrame();
   }
 
   renderStage() {
@@ -71,15 +88,18 @@ export class Game {
   }
 
   stopGame() {
-    clearInterval(this.intervalId);
+    console.log(this.intervalId);
+    window.cancelAnimationFrame(this.intervalId);
     console.log('GAME OVER');
   }
 
   renderSnake() {
     const { canvas, cellSize } = this._stage;
-    this._snake = Snake.create(canvas, cellSize, (col, row) =>
-      this.onMove(col, row)
-    );
+    this._snake = Snake.create({
+      canvas,
+      cellSize,
+      onMove: (col, row) => this.onMove(col, row)
+    });
   }
 
   onMove() {
