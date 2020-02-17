@@ -10,7 +10,8 @@
     "describe": "readonly",
     "it": "readonly",
     "require": "readonly",
-    "__dirname": "readonly"
+    "__dirname": "readonly",
+    "module": "readonly"
   },
   "parserOptions": {
     "ecmaVersion": 2018,

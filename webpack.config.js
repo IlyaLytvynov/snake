@@ -1,9 +1,13 @@
+/* eslint-disable array-bracket-newline */
+/* eslint-disable global-require */
+/* eslint-disable no-unused-vars */
+/* eslint-disable require-unicode-regexp */
+/* eslint-disable prefer-named-capture-group */
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-
 module.exports = {
   entry: './src/index.js',
   output: {
-    path: __dirname + '/public',
+    path: `${__dirname}/public`,
     filename: '[name].js'
   },
   devtool: 'source-map',
