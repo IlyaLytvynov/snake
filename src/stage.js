@@ -1,4 +1,4 @@
-import { Cell } from './cell.js';
+import { GameField } from './gameField.js';
 /**
  * @typedef Params
  * @param {DOMElement} mp
@@ -24,36 +24,32 @@ export class Stage {
    * @param {Number} height
    */
   constructor(mp, width, height) {
-    this._cellW = 16;
-    this._cellH = 16;
+    this.cellW = 32;
+    this.cellH = 32;
 
-    this._mp = mp;
-    this._width = width;
-    this._height = height;
-  }
-
-  get canvas() {
-    return this._canvas;
+    this.mp = mp;
+    this.width = width;
+    this.height = height;
   }
 
   get heightInCells() {
-    return this._height / this._cellH;
+    return this.field.heightInCells;
   }
 
   get widthInCells() {
-    return this._width / this._cellW;
+    return this.field.widthInCells;
   }
 
   get cellSize() {
-    return { w: this._cellW, h: this._cellH };
+    return { w: this.cellW, h: this.cellH };
   }
 
   get apple() {
-    return this._apple;
+    return this.field.apple;
   }
 
-  checkApple(col, row) {
-    return this._apple.col === col && this._apple.row === row;
+  checkApple({ col, row }) {
+    return this.field.checkApple({ col, row });
   }
 
   /**
@@ -62,28 +58,25 @@ export class Stage {
    * @param {number} coords.col
    * @param {number} coords.row
    */
-  renderApple({ col, row }) {
-    this._apple = Cell.createWithColor({
-      canvas: this._canvas,
-      col,
-      row,
-      w: this._cellW,
-      h: this._cellH,
-      bgColor: 'red'
-    });
+  renderApple(coords) {
+    this.field.renderApple(coords);
   }
 
   /**
    * @returns {DOMElement}
    */
   init() {
-    this._canvas = document.createElement('canvas');
-    this._canvas.width = this._width;
-    this._canvas.height = this._height;
-    this._canvas.style.border = '1px solid red';
+    this.createCanvas();
+    this.drawField();
+  }
 
-    this._mp.appendChild(this._canvas);
-    return this._canvas;
+  createCanvas() {
+    this.canvas = document.createElement('canvas');
+    this.canvas.width = this.width;
+    this.canvas.height = this.height;
+    this.canvas.style.border = '1px solid red';
+
+    this.mp.appendChild(this.canvas);
   }
 
   render() {
@@ -91,16 +84,12 @@ export class Stage {
   }
 
   drawField() {
-    for (let row = 0; row < this.heightInCells; row += 1) {
-      for (let col = 0; col < this.widthInCells; col += 1) {
-        Cell.create({
-          canvas: this._canvas,
-          col,
-          row,
-          w: this._cellW,
-          h: this._cellH
-        });
-      }
-    }
+    this.field = GameField.create({
+      canvas: this.canvas,
+      width: this.width,
+      height: this.height,
+      cellH: this.cellH,
+      cellW: this.cellW
+    });
   }
 }

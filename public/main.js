@@ -239,7 +239,7 @@ function () {
     value: function create(mp) {
       var game = new Game(mp);
       game.init();
-      game.startGame();
+      window.game = game;
       return game;
     }
     /**
@@ -251,17 +251,17 @@ function () {
   function Game(mp) {
     _classCallCheck(this, Game);
 
-    this._mp = mp;
-    this._score = 0;
-    this._speed = 600;
+    this.mp = mp;
+    this.score = 0;
+    this.speed = 600;
     window.game = this;
   }
 
   _createClass(Game, [{
     key: "getRandomCell",
     value: function getRandomCell() {
-      var col = Math.ceil(Math.random() * this._stage.widthInCells - 1);
-      var row = Math.ceil(Math.random() * this._stage.heightInCells - 1);
+      var col = Math.ceil(Math.random() * this.stage.widthInCells - 1);
+      var row = Math.ceil(Math.random() * this.stage.heightInCells - 1);
       return {
         col: col,
         row: row
@@ -272,7 +272,6 @@ function () {
     value: function init() {
       this.createStage();
       this.setAppleCoords();
-      this.renderStage();
       this.renderApple();
       this.renderSnake();
       this.addEventListeners();
@@ -280,17 +279,16 @@ function () {
   }, {
     key: "setAppleCoords",
     value: function setAppleCoords() {
-      this._appleCoords = this.getRandomCell();
+      this.appleCoords = this.getRandomCell();
     }
   }, {
     key: "createStage",
     value: function createStage() {
-      this._stage = _stage_js__WEBPACK_IMPORTED_MODULE_0__["Stage"].create(this._mp);
+      this.stage = _stage_js__WEBPACK_IMPORTED_MODULE_0__["Stage"].create(this.mp);
     }
   }, {
     key: "startGame",
     value: function startGame() {
-      this.i = 0;
       this.requestFrame();
     }
   }, {
@@ -298,49 +296,40 @@ function () {
     value: function requestFrame() {
       var _this = this;
 
-      this.intervalId = requestAnimationFrame(function () {
-        console.group(_this.i);
-
-        if (_this.i < 10) {
-          // This.gameFrame();
-          _this.requestFrame();
-        } else {
-          cancelAnimationFrame(_this.intervalId);
-        }
-
-        _this.i += 1;
-      });
+      this.intervalId = setInterval(function () {
+        requestAnimationFrame(function () {
+          _this.update();
+        });
+      }, 300);
     }
   }, {
-    key: "gameFrame",
-    value: function gameFrame() {
+    key: "update",
+    value: function update() {
       this.renderStage();
       this.renderApple();
       this.move();
-      this.gameFrame();
     }
   }, {
     key: "renderStage",
     value: function renderStage() {
-      this._stage.render();
+      this.stage.render();
     }
   }, {
     key: "move",
     value: function move() {
-      this._snake.move();
-
-      this._snake.render();
+      this.snake.move();
+      this.snake.render();
     }
   }, {
     key: "renderApple",
     value: function renderApple() {
-      this._stage.renderApple(this._appleCoords);
+      this.stage.renderApple(this.appleCoords);
     }
   }, {
     key: "stopGame",
     value: function stopGame() {
       console.log(this.intervalId);
-      window.cancelAnimationFrame(this.intervalId);
+      window.clearInterval(this.intervalId);
       console.log('GAME OVER');
     }
   }, {
@@ -348,10 +337,10 @@ function () {
     value: function renderSnake() {
       var _this2 = this;
 
-      var _this$_stage = this._stage,
-          canvas = _this$_stage.canvas,
-          cellSize = _this$_stage.cellSize;
-      this._snake = _snake_js__WEBPACK_IMPORTED_MODULE_1__["Snake"].create({
+      var _this$stage = this.stage,
+          canvas = _this$stage.canvas,
+          cellSize = _this$stage.cellSize;
+      this.snake = _snake_js__WEBPACK_IMPORTED_MODULE_1__["Snake"].create({
         canvas: canvas,
         cellSize: cellSize,
         onMove: function onMove(col, row) {
@@ -362,39 +351,46 @@ function () {
   }, {
     key: "onMove",
     value: function onMove() {
-      var _this$_snake$head = this._snake.head,
-          col = _this$_snake$head.col,
-          row = _this$_snake$head.row;
+      var _this$snake$head = this.snake.head,
+          col = _this$snake$head.col,
+          row = _this$snake$head.row;
 
       if (this.checkCollisions(col, row)) {
         this.stopGame();
       }
 
-      if (this.checkApple(col, row)) {
-        this._snake.grow();
-
+      if (this.checkApple({
+        col: col,
+        row: row
+      })) {
+        this.snake.grow();
         this.setAppleCoords();
       }
     }
   }, {
     key: "checkApple",
-    value: function checkApple(col, row) {
-      return this._stage.checkApple(col, row);
+    value: function checkApple(_ref) {
+      var col = _ref.col,
+          row = _ref.row;
+      return this.stage.checkApple({
+        col: col,
+        row: row
+      });
     }
   }, {
     key: "checkCollisions",
     value: function checkCollisions(col, row) {
-      return this.checkStageCollision(col, row) || this._snake.checkSelfCollision();
+      return this.checkStageCollision(col, row) || this.snake.checkSelfCollision();
     }
   }, {
     key: "checkStageCollision",
     value: function checkStageCollision(col, row) {
-      return col >= this._stage.widthInCells || row >= this._stage.heightInCells || col < 0 || row < 0;
+      return col >= this.stage.widthInCells || row >= this.stage.heightInCells || col < 0 || row < 0;
     }
   }, {
     key: "setDirection",
     value: function setDirection(dir) {
-      this._snake.setDirection(dir);
+      this.snake.setDirection(dir);
     }
   }, {
     key: "addEventListeners",
@@ -425,14 +421,139 @@ function () {
         }
       });
     }
-  }, {
-    key: "gameSpeed",
-    get: function get() {
-      return this._speed;
-    }
   }]);
 
   return Game;
+}();
+
+/***/ }),
+
+/***/ "./src/gameField.js":
+/*!**************************!*\
+  !*** ./src/gameField.js ***!
+  \**************************/
+/*! exports provided: GameField */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "GameField", function() { return GameField; });
+/* harmony import */ var _cell_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./cell.js */ "./src/cell.js");
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+
+/**
+ * @typedef Params
+ * @param {DOMElement} mp
+ * @param {Number} width
+ * @param {Number} height
+ */
+
+var GameField =
+/*#__PURE__*/
+function () {
+  _createClass(GameField, null, [{
+    key: "create",
+
+    /**
+     * @param {DOMElement} mp
+     * @param {Number} width
+     * @param {Number} height
+     */
+    value: function create(options) {
+      var stage = new GameField(options);
+      stage.render();
+      return stage;
+    }
+    /**
+     * @param {DOMElement} mp
+     * @param {Number} width
+     * @param {Number} height
+     */
+
+  }]);
+
+  function GameField(_ref) {
+    var canvas = _ref.canvas,
+        width = _ref.width,
+        height = _ref.height,
+        cellW = _ref.cellW,
+        cellH = _ref.cellH;
+
+    _classCallCheck(this, GameField);
+
+    this.cellW = cellW;
+    this.cellH = cellH;
+    this.canvas = canvas;
+    this.width = width;
+    this.height = height;
+  }
+
+  _createClass(GameField, [{
+    key: "checkApple",
+    value: function checkApple(_ref2) {
+      var col = _ref2.col,
+          row = _ref2.row;
+      return this.apple.col === col && this.apple.row === row;
+    }
+    /**
+     *
+     * @param {Object} coords
+     * @param {number} coords.col
+     * @param {number} coords.row
+     */
+
+  }, {
+    key: "renderApple",
+    value: function renderApple(_ref3) {
+      var col = _ref3.col,
+          row = _ref3.row;
+      this.apple = _cell_js__WEBPACK_IMPORTED_MODULE_0__["Cell"].createWithColor({
+        canvas: this.canvas,
+        col: col,
+        row: row,
+        w: this.cellW,
+        h: this.cellH,
+        bgColor: 'red'
+      });
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      this.drawField();
+    }
+  }, {
+    key: "drawField",
+    value: function drawField() {
+      for (var row = 0; row < this.heightInCells; row += 1) {
+        for (var col = 0; col < this.widthInCells; col += 1) {
+          _cell_js__WEBPACK_IMPORTED_MODULE_0__["Cell"].create({
+            canvas: this.canvas,
+            col: col,
+            row: row,
+            w: this.cellW,
+            h: this.cellH
+          });
+        }
+      }
+    }
+  }, {
+    key: "heightInCells",
+    get: function get() {
+      return this.height / this.cellH;
+    }
+  }, {
+    key: "widthInCells",
+    get: function get() {
+      return this.width / this.cellW;
+    }
+  }]);
+
+  return GameField;
 }();
 
 /***/ }),
@@ -703,7 +824,7 @@ function () {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Stage", function() { return Stage; });
-/* harmony import */ var _cell_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./cell.js */ "./src/cell.js");
+/* harmony import */ var _gameField_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./gameField.js */ "./src/gameField.js");
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -747,17 +868,22 @@ function () {
   function Stage(mp, width, height) {
     _classCallCheck(this, Stage);
 
-    this._cellW = 16;
-    this._cellH = 16;
-    this._mp = mp;
-    this._width = width;
-    this._height = height;
+    this.cellW = 32;
+    this.cellH = 32;
+    this.mp = mp;
+    this.width = width;
+    this.height = height;
   }
 
   _createClass(Stage, [{
     key: "checkApple",
-    value: function checkApple(col, row) {
-      return this._apple.col === col && this._apple.row === row;
+    value: function checkApple(_ref) {
+      var col = _ref.col,
+          row = _ref.row;
+      return this.field.checkApple({
+        col: col,
+        row: row
+      });
     }
     /**
      *
@@ -768,17 +894,8 @@ function () {
 
   }, {
     key: "renderApple",
-    value: function renderApple(_ref) {
-      var col = _ref.col,
-          row = _ref.row;
-      this._apple = _cell_js__WEBPACK_IMPORTED_MODULE_0__["Cell"].createWithColor({
-        canvas: this._canvas,
-        col: col,
-        row: row,
-        w: this._cellW,
-        h: this._cellH,
-        bgColor: 'red'
-      });
+    value: function renderApple(coords) {
+      this.field.renderApple(coords);
     }
     /**
      * @returns {DOMElement}
@@ -787,14 +904,17 @@ function () {
   }, {
     key: "init",
     value: function init() {
-      this._canvas = document.createElement('canvas');
-      this._canvas.width = this._width;
-      this._canvas.height = this._height;
-      this._canvas.style.border = '1px solid red';
-
-      this._mp.appendChild(this._canvas);
-
-      return this._canvas;
+      this.createCanvas();
+      this.drawField();
+    }
+  }, {
+    key: "createCanvas",
+    value: function createCanvas() {
+      this.canvas = document.createElement('canvas');
+      this.canvas.width = this.width;
+      this.canvas.height = this.height;
+      this.canvas.style.border = '1px solid red';
+      this.mp.appendChild(this.canvas);
     }
   }, {
     key: "render",
@@ -804,45 +924,36 @@ function () {
   }, {
     key: "drawField",
     value: function drawField() {
-      for (var row = 0; row < this.heightInCells; row += 1) {
-        for (var col = 0; col < this.widthInCells; col += 1) {
-          _cell_js__WEBPACK_IMPORTED_MODULE_0__["Cell"].create({
-            canvas: this._canvas,
-            col: col,
-            row: row,
-            w: this._cellW,
-            h: this._cellH
-          });
-        }
-      }
-    }
-  }, {
-    key: "canvas",
-    get: function get() {
-      return this._canvas;
+      this.field = _gameField_js__WEBPACK_IMPORTED_MODULE_0__["GameField"].create({
+        canvas: this.canvas,
+        width: this.width,
+        height: this.height,
+        cellH: this.cellH,
+        cellW: this.cellW
+      });
     }
   }, {
     key: "heightInCells",
     get: function get() {
-      return this._height / this._cellH;
+      return this.field.heightInCells;
     }
   }, {
     key: "widthInCells",
     get: function get() {
-      return this._width / this._cellW;
+      return this.field.widthInCells;
     }
   }, {
     key: "cellSize",
     get: function get() {
       return {
-        w: this._cellW,
-        h: this._cellH
+        w: this.cellW,
+        h: this.cellH
       };
     }
   }, {
     key: "apple",
     get: function get() {
-      return this._apple;
+      return this.field.apple;
     }
   }]);
 

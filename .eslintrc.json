@@ -9,9 +9,11 @@
     "SharedArrayBuffer": "readonly",
     "describe": "readonly",
     "it": "readonly",
+    "expect": "readonly",
     "require": "readonly",
     "__dirname": "readonly",
-    "module": "readonly"
+    "module": "readonly",
+    "window": "readonly"
   },
   "parserOptions": {
     "ecmaVersion": 2018,
