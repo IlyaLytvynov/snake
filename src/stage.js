@@ -12,7 +12,7 @@ export class Stage {
    * @param {Number} width
    * @param {Number} height
    */
-  static create(mp, w = 640, h = 640) {
+  static create(mp, w = 320, h = 320) {
     const stage = new Stage(mp, w, h);
     stage.init();
     return stage;
@@ -24,8 +24,8 @@ export class Stage {
    * @param {Number} height
    */
   constructor(mp, width, height) {
-    this.cellW = 32;
-    this.cellH = 32;
+    this.cellW = 16;
+    this.cellH = 16;
 
     this.mp = mp;
     this.width = width;
@@ -48,7 +48,7 @@ export class Stage {
     return this.field.apple;
   }
 
-  checkApple({ col, row }) {
+  isEat({ col, row }) {
     return this.field.checkApple({ col, row });
   }
 

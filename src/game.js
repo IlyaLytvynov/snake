@@ -19,6 +19,8 @@ export class Game {
     this.mp = mp;
     this.score = 0;
     this.speed = 600;
+    this.fps = 6;
+    this.lastTime = Date.now();
     window.game = this;
   }
 
@@ -45,21 +47,32 @@ export class Game {
   }
 
   startGame() {
-    this.requestFrame();
+    this.loop();
   }
 
-  requestFrame() {
-    this.intervalId = setInterval(() => {
-      requestAnimationFrame(() => {
+  loop() {
+    if (this.collision) {
+      this.stopGame();
+      return;
+    }
+    const fpsInterval = 1000 / this.fps;
+    const currentTime = Date.now();
+    const elapsedTime = currentTime - this.lastTime;
+    this.requestedFrame = window.requestAnimationFrame(() => {
+      if (elapsedTime > fpsInterval) {
         this.update();
-      });
-    }, 300);
+        this.lastTime = currentTime - elapsedTime % fpsInterval;
+      }
+      this.loop();
+    });
   }
 
   update() {
+    this.checkApple();
     this.renderStage();
     this.renderApple();
     this.move();
+    this.checkCollisions();
   }
 
   renderStage() {
@@ -77,7 +90,7 @@ export class Game {
 
   stopGame() {
     console.log(this.intervalId);
-    window.clearInterval(this.intervalId);
+    window.cancelAnimationFrame(this.requestedFrame);
     console.log('GAME OVER');
   }
 
@@ -85,30 +98,22 @@ export class Game {
     const { canvas, cellSize } = this.stage;
     this.snake = Snake.create({
       canvas,
-      cellSize,
-      onMove: (col, row) => this.onMove(col, row)
+      cellSize
     });
   }
 
-  onMove() {
+  checkApple() {
     const { col, row } = this.snake.head;
-    if (this.checkCollisions(col, row)) {
-      this.stopGame();
-    }
-    if (this.checkApple({ col, row })) {
+    if (this.stage.isEat({ col, row })) {
       this.snake.grow();
       this.setAppleCoords();
     }
   }
 
-  checkApple({ col, row }) {
-    return this.stage.checkApple({ col, row });
-  }
-
-  checkCollisions(col, row) {
-    return (
-      this.checkStageCollision(col, row) || this.snake.checkSelfCollision()
-    );
+  checkCollisions() {
+    const { col, row } = this.snake.head;
+    this.collision =
+      this.checkStageCollision(col, row) || this.snake.checkSelfCollision();
   }
 
   checkStageCollision(col, row) {

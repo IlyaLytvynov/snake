@@ -254,6 +254,8 @@ function () {
     this.mp = mp;
     this.score = 0;
     this.speed = 600;
+    this.fps = 6;
+    this.lastTime = Date.now();
     window.game = this;
   }
 
@@ -289,25 +291,39 @@ function () {
   }, {
     key: "startGame",
     value: function startGame() {
-      this.requestFrame();
+      this.loop();
     }
   }, {
-    key: "requestFrame",
-    value: function requestFrame() {
+    key: "loop",
+    value: function loop() {
       var _this = this;
 
-      this.intervalId = setInterval(function () {
-        requestAnimationFrame(function () {
+      if (this.collision) {
+        this.stopGame();
+        return;
+      }
+
+      var fpsInterval = 1000 / this.fps;
+      var currentTime = Date.now();
+      var elapsedTime = currentTime - this.lastTime;
+      this.requestedFrame = window.requestAnimationFrame(function () {
+        if (elapsedTime > fpsInterval) {
           _this.update();
-        });
-      }, 300);
+
+          _this.lastTime = currentTime - elapsedTime % fpsInterval;
+        }
+
+        _this.loop();
+      });
     }
   }, {
     key: "update",
     value: function update() {
+      this.checkApple();
       this.renderStage();
       this.renderApple();
       this.move();
+      this.checkCollisions();
     }
   }, {
     key: "renderStage",
@@ -329,37 +345,28 @@ function () {
     key: "stopGame",
     value: function stopGame() {
       console.log(this.intervalId);
-      window.clearInterval(this.intervalId);
+      window.cancelAnimationFrame(this.requestedFrame);
       console.log('GAME OVER');
     }
   }, {
     key: "renderSnake",
     value: function renderSnake() {
-      var _this2 = this;
-
       var _this$stage = this.stage,
           canvas = _this$stage.canvas,
           cellSize = _this$stage.cellSize;
       this.snake = _snake_js__WEBPACK_IMPORTED_MODULE_1__["Snake"].create({
         canvas: canvas,
-        cellSize: cellSize,
-        onMove: function onMove(col, row) {
-          return _this2.onMove(col, row);
-        }
+        cellSize: cellSize
       });
     }
   }, {
-    key: "onMove",
-    value: function onMove() {
+    key: "checkApple",
+    value: function checkApple() {
       var _this$snake$head = this.snake.head,
           col = _this$snake$head.col,
           row = _this$snake$head.row;
 
-      if (this.checkCollisions(col, row)) {
-        this.stopGame();
-      }
-
-      if (this.checkApple({
+      if (this.stage.isEat({
         col: col,
         row: row
       })) {
@@ -368,19 +375,12 @@ function () {
       }
     }
   }, {
-    key: "checkApple",
-    value: function checkApple(_ref) {
-      var col = _ref.col,
-          row = _ref.row;
-      return this.stage.checkApple({
-        col: col,
-        row: row
-      });
-    }
-  }, {
     key: "checkCollisions",
-    value: function checkCollisions(col, row) {
-      return this.checkStageCollision(col, row) || this.snake.checkSelfCollision();
+    value: function checkCollisions() {
+      var _this$snake$head2 = this.snake.head,
+          col = _this$snake$head2.col,
+          row = _this$snake$head2.row;
+      this.collision = this.checkStageCollision(col, row) || this.snake.checkSelfCollision();
     }
   }, {
     key: "checkStageCollision",
@@ -395,27 +395,27 @@ function () {
   }, {
     key: "addEventListeners",
     value: function addEventListeners() {
-      var _this3 = this;
+      var _this2 = this;
 
       document.addEventListener('keydown', function (e) {
         switch (e.key) {
           case 's':
-            _this3.setDirection(_snake_js__WEBPACK_IMPORTED_MODULE_1__["DIRECTIONS"].BOTTOM);
+            _this2.setDirection(_snake_js__WEBPACK_IMPORTED_MODULE_1__["DIRECTIONS"].BOTTOM);
 
             break;
 
           case 'w':
-            _this3.setDirection(_snake_js__WEBPACK_IMPORTED_MODULE_1__["DIRECTIONS"].TOP);
+            _this2.setDirection(_snake_js__WEBPACK_IMPORTED_MODULE_1__["DIRECTIONS"].TOP);
 
             break;
 
           case 'd':
-            _this3.setDirection(_snake_js__WEBPACK_IMPORTED_MODULE_1__["DIRECTIONS"].RIGHT);
+            _this2.setDirection(_snake_js__WEBPACK_IMPORTED_MODULE_1__["DIRECTIONS"].RIGHT);
 
             break;
 
           case 'a':
-            _this3.setDirection(_snake_js__WEBPACK_IMPORTED_MODULE_1__["DIRECTIONS"].LEFT);
+            _this2.setDirection(_snake_js__WEBPACK_IMPORTED_MODULE_1__["DIRECTIONS"].LEFT);
 
             break;
         }
@@ -694,7 +694,7 @@ function () {
           col = _this$getNewHeadCoord.col,
           row = _this$getNewHeadCoord.row;
 
-      this._segments.unshift(this.createSegment(col, row));
+      this._segments.push(this.createSegment(col, row));
     }
     /**
      * @param {boolean} collision
@@ -741,7 +741,6 @@ function () {
           row = _this$getNewHeadCoord2.row;
 
       this.moveHead(col, row);
-      this.onMove();
     }
   }, {
     key: "moveHead",
@@ -851,8 +850,8 @@ function () {
      * @param {Number} height
      */
     value: function create(mp) {
-      var w = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 640;
-      var h = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 640;
+      var w = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 320;
+      var h = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 320;
       var stage = new Stage(mp, w, h);
       stage.init();
       return stage;
@@ -868,16 +867,16 @@ function () {
   function Stage(mp, width, height) {
     _classCallCheck(this, Stage);
 
-    this.cellW = 32;
-    this.cellH = 32;
+    this.cellW = 16;
+    this.cellH = 16;
     this.mp = mp;
     this.width = width;
     this.height = height;
   }
 
   _createClass(Stage, [{
-    key: "checkApple",
-    value: function checkApple(_ref) {
+    key: "isEat",
+    value: function isEat(_ref) {
       var col = _ref.col,
           row = _ref.row;
       return this.field.checkApple({

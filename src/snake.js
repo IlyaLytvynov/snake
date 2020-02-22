@@ -74,7 +74,7 @@ export class Snake {
 
   grow() {
     const { col, row } = this.getNewHeadCoordinates();
-    this._segments.unshift(this.createSegment(col, row));
+    this._segments.push(this.createSegment(col, row));
   }
 
   /**
@@ -114,7 +114,6 @@ export class Snake {
   move() {
     const { col, row } = this.getNewHeadCoordinates();
     this.moveHead(col, row);
-    this.onMove();
   }
 
   moveHead(col, row) {
