@@ -15,3 +15,15 @@ export const normalizeScore = score => {
   }
   return `${score}`;
 };
+
+export const sizeGenerator = ({ width, height }) => {
+  const CELL_COUNT = 20;
+  const cellSize = Math.floor(width / CELL_COUNT);
+  const adjustedWidth = cellSize * CELL_COUNT;
+  const adjustedHeight = Math.floor(height / cellSize) * cellSize;
+  return {
+    cellSize,
+    height: adjustedHeight,
+    width: adjustedWidth
+  };
+};

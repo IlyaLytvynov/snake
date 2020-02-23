@@ -2,6 +2,7 @@ import { GameField } from './gameField';
 import { Score } from './score';
 import { WelcomeScreen } from './welcomeScreen';
 import { Screen } from './screen';
+import { sizeGenerator } from './utils';
 /**
  * @typedef Params
  * @param {DOMElement} root
@@ -20,7 +21,8 @@ export class Stage {
   static create(options) {
     const { width, height } = Screen.getViewportSize();
     console.log(width, height);
-    const stage = new Stage({ ...options, width, height });
+    const sizes = sizeGenerator({ width, height });
+    const stage = new Stage({ ...options, ...sizes });
     stage.init();
     return stage;
   }
@@ -32,11 +34,12 @@ export class Stage {
    * @param {Number} o.height
    * @param {function} o.onWelcomeScreenClick
    */
-  constructor({ root, onWelcomeScreenClick, width, height }) {
+  constructor({ root, onWelcomeScreenClick, width, height, cellSize }) {
     this.root = root;
     this.mode = GAME_MODES.PENDING;
     this.width = width;
     this.height = height;
+    this.cellSize = cellSize;
     this.onWelcomeScreenClick = onWelcomeScreenClick;
   }
 
@@ -46,10 +49,6 @@ export class Stage {
 
   get widthInCells() {
     return this.field.widthInCells;
-  }
-
-  get cellSize() {
-    return this.field.cellSize;
   }
 
   setMode(gameMode) {
@@ -132,7 +131,8 @@ export class Stage {
     this.field = GameField.create({
       canvas: this.canvas,
       width: this.width,
-      height: this.height
+      height: this.height,
+      cellSize: this.cellSize
     });
   }
 }

@@ -493,11 +493,12 @@ function () {
   function GameField(_ref) {
     var canvas = _ref.canvas,
         width = _ref.width,
-        height = _ref.height;
+        height = _ref.height,
+        cellSize = _ref.cellSize;
 
     _classCallCheck(this, GameField);
 
-    this.cellSize = Math.floor(width / 20);
+    this.cellSize = cellSize;
     this.canvas = canvas;
     this.width = width;
     this.height = height;
@@ -925,6 +926,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _score__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./score */ "./src/score.js");
 /* harmony import */ var _welcomeScreen__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./welcomeScreen */ "./src/welcomeScreen.js");
 /* harmony import */ var _screen__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./screen */ "./src/screen.js");
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./utils */ "./src/utils.js");
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
@@ -936,6 +938,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
 
 
 
@@ -967,10 +970,11 @@ function () {
           height = _Screen$getViewportSi.height;
 
       console.log(width, height);
-      var stage = new Stage(_objectSpread({}, options, {
+      var sizes = Object(_utils__WEBPACK_IMPORTED_MODULE_4__["sizeGenerator"])({
         width: width,
         height: height
-      }));
+      });
+      var stage = new Stage(_objectSpread({}, options, {}, sizes));
       stage.init();
       return stage;
     }
@@ -988,7 +992,8 @@ function () {
     var root = _ref.root,
         onWelcomeScreenClick = _ref.onWelcomeScreenClick,
         width = _ref.width,
-        height = _ref.height;
+        height = _ref.height,
+        cellSize = _ref.cellSize;
 
     _classCallCheck(this, Stage);
 
@@ -996,6 +1001,7 @@ function () {
     this.mode = GAME_MODES.PENDING;
     this.width = width;
     this.height = height;
+    this.cellSize = cellSize;
     this.onWelcomeScreenClick = onWelcomeScreenClick;
   }
 
@@ -1106,7 +1112,8 @@ function () {
       this.field = _gameField__WEBPACK_IMPORTED_MODULE_0__["GameField"].create({
         canvas: this.canvas,
         width: this.width,
-        height: this.height
+        height: this.height,
+        cellSize: this.cellSize
       });
     }
   }, {
@@ -1118,11 +1125,6 @@ function () {
     key: "widthInCells",
     get: function get() {
       return this.field.widthInCells;
-    }
-  }, {
-    key: "cellSize",
-    get: function get() {
-      return this.field.cellSize;
     }
   }]);
 
@@ -1230,13 +1232,14 @@ function () {
 /*!**********************!*\
   !*** ./src/utils.js ***!
   \**********************/
-/*! exports provided: getCellColor, normalizeScore */
+/*! exports provided: getCellColor, normalizeScore, sizeGenerator */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getCellColor", function() { return getCellColor; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "normalizeScore", function() { return normalizeScore; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "sizeGenerator", function() { return sizeGenerator; });
 var getCellColor = function getCellColor(col) {
   var color = 'white';
 
@@ -1256,6 +1259,19 @@ var normalizeScore = function normalizeScore(score) {
   }
 
   return "".concat(score);
+};
+var sizeGenerator = function sizeGenerator(_ref) {
+  var width = _ref.width,
+      height = _ref.height;
+  var CELL_COUNT = 20;
+  var cellSize = Math.floor(width / CELL_COUNT);
+  var adjustedWidth = cellSize * CELL_COUNT;
+  var adjustedHeight = Math.floor(height / cellSize) * cellSize;
+  return {
+    cellSize: cellSize,
+    height: adjustedHeight,
+    width: adjustedWidth
+  };
 };
 
 /***/ }),

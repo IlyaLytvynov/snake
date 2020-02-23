@@ -24,8 +24,8 @@ export class GameField {
    * @param {Number} width
    * @param {Number} height
    */
-  constructor({ canvas, width, height }) {
-    this.cellSize = Math.floor(width / 20);
+  constructor({ canvas, width, height, cellSize }) {
+    this.cellSize = cellSize;
     this.canvas = canvas;
     this.width = width;
     this.height = height;
