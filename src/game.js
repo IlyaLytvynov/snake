@@ -1,4 +1,4 @@
-import { Stage } from './stage.js';
+import { Stage, GAME_MODES } from './stage.js';
 import { Snake, DIRECTIONS } from './snake.js';
 
 export class Game {
@@ -18,35 +18,29 @@ export class Game {
   constructor(mp) {
     this.mp = mp;
     this.score = 0;
-    this.speed = 600;
-    this.fps = 6;
+    this.fps = 3;
     this.lastTime = Date.now();
-    window.game = this;
   }
 
-  getRandomCell() {
-    const col = Math.ceil(Math.random() * this.stage.widthInCells - 1);
-    const row = Math.ceil(Math.random() * this.stage.heightInCells - 1);
-    return { col, row };
+  get appleCoords() {
+    return this.stage.apple;
   }
 
   init() {
     this.createStage();
-    this.setAppleCoords();
-    this.renderApple();
-    this.renderSnake();
-    this.addEventListeners();
-  }
-
-  setAppleCoords() {
-    this.appleCoords = this.getRandomCell();
   }
 
   createStage() {
-    this.stage = Stage.create(this.mp);
+    this.stage = Stage.create({
+      root: this.mp,
+      onWelcomeScreenClick: () => this.startGame()
+    });
   }
 
   startGame() {
+    this.stage.setMode(GAME_MODES.STARTED);
+    this.renderSnake();
+    this.addEventListeners();
     this.loop();
   }
 
@@ -70,22 +64,18 @@ export class Game {
   update() {
     this.checkApple();
     this.renderStage();
-    this.renderApple();
     this.move();
     this.checkCollisions();
   }
 
   renderStage() {
+    this.stage.score = this.score;
     this.stage.render();
   }
 
   move() {
     this.snake.move();
     this.snake.render();
-  }
-
-  renderApple() {
-    this.stage.renderApple(this.appleCoords);
   }
 
   stopGame() {
@@ -106,7 +96,8 @@ export class Game {
     const { col, row } = this.snake.head;
     if (this.stage.isEat({ col, row })) {
       this.snake.grow();
-      this.setAppleCoords();
+      this.score += 1;
+      this.stage.updateApple();
     }
   }
 

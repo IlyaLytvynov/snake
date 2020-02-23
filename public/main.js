@@ -253,50 +253,39 @@ function () {
 
     this.mp = mp;
     this.score = 0;
-    this.speed = 600;
-    this.fps = 6;
+    this.fps = 3;
     this.lastTime = Date.now();
-    window.game = this;
   }
 
   _createClass(Game, [{
-    key: "getRandomCell",
-    value: function getRandomCell() {
-      var col = Math.ceil(Math.random() * this.stage.widthInCells - 1);
-      var row = Math.ceil(Math.random() * this.stage.heightInCells - 1);
-      return {
-        col: col,
-        row: row
-      };
-    }
-  }, {
     key: "init",
     value: function init() {
       this.createStage();
-      this.setAppleCoords();
-      this.renderApple();
-      this.renderSnake();
-      this.addEventListeners();
-    }
-  }, {
-    key: "setAppleCoords",
-    value: function setAppleCoords() {
-      this.appleCoords = this.getRandomCell();
     }
   }, {
     key: "createStage",
     value: function createStage() {
-      this.stage = _stage_js__WEBPACK_IMPORTED_MODULE_0__["Stage"].create(this.mp);
+      var _this = this;
+
+      this.stage = _stage_js__WEBPACK_IMPORTED_MODULE_0__["Stage"].create({
+        root: this.mp,
+        onWelcomeScreenClick: function onWelcomeScreenClick() {
+          return _this.startGame();
+        }
+      });
     }
   }, {
     key: "startGame",
     value: function startGame() {
+      this.stage.setMode(_stage_js__WEBPACK_IMPORTED_MODULE_0__["GAME_MODES"].STARTED);
+      this.renderSnake();
+      this.addEventListeners();
       this.loop();
     }
   }, {
     key: "loop",
     value: function loop() {
-      var _this = this;
+      var _this2 = this;
 
       if (this.collision) {
         this.stopGame();
@@ -308,12 +297,12 @@ function () {
       var elapsedTime = currentTime - this.lastTime;
       this.requestedFrame = window.requestAnimationFrame(function () {
         if (elapsedTime > fpsInterval) {
-          _this.update();
+          _this2.update();
 
-          _this.lastTime = currentTime - elapsedTime % fpsInterval;
+          _this2.lastTime = currentTime - elapsedTime % fpsInterval;
         }
 
-        _this.loop();
+        _this2.loop();
       });
     }
   }, {
@@ -321,13 +310,13 @@ function () {
     value: function update() {
       this.checkApple();
       this.renderStage();
-      this.renderApple();
       this.move();
       this.checkCollisions();
     }
   }, {
     key: "renderStage",
     value: function renderStage() {
+      this.stage.score = this.score;
       this.stage.render();
     }
   }, {
@@ -335,11 +324,6 @@ function () {
     value: function move() {
       this.snake.move();
       this.snake.render();
-    }
-  }, {
-    key: "renderApple",
-    value: function renderApple() {
-      this.stage.renderApple(this.appleCoords);
     }
   }, {
     key: "stopGame",
@@ -371,7 +355,8 @@ function () {
         row: row
       })) {
         this.snake.grow();
-        this.setAppleCoords();
+        this.score += 1;
+        this.stage.updateApple();
       }
     }
   }, {
@@ -395,31 +380,36 @@ function () {
   }, {
     key: "addEventListeners",
     value: function addEventListeners() {
-      var _this2 = this;
+      var _this3 = this;
 
       document.addEventListener('keydown', function (e) {
         switch (e.key) {
           case 's':
-            _this2.setDirection(_snake_js__WEBPACK_IMPORTED_MODULE_1__["DIRECTIONS"].BOTTOM);
+            _this3.setDirection(_snake_js__WEBPACK_IMPORTED_MODULE_1__["DIRECTIONS"].BOTTOM);
 
             break;
 
           case 'w':
-            _this2.setDirection(_snake_js__WEBPACK_IMPORTED_MODULE_1__["DIRECTIONS"].TOP);
+            _this3.setDirection(_snake_js__WEBPACK_IMPORTED_MODULE_1__["DIRECTIONS"].TOP);
 
             break;
 
           case 'd':
-            _this2.setDirection(_snake_js__WEBPACK_IMPORTED_MODULE_1__["DIRECTIONS"].RIGHT);
+            _this3.setDirection(_snake_js__WEBPACK_IMPORTED_MODULE_1__["DIRECTIONS"].RIGHT);
 
             break;
 
           case 'a':
-            _this2.setDirection(_snake_js__WEBPACK_IMPORTED_MODULE_1__["DIRECTIONS"].LEFT);
+            _this3.setDirection(_snake_js__WEBPACK_IMPORTED_MODULE_1__["DIRECTIONS"].LEFT);
 
             break;
         }
       });
+    }
+  }, {
+    key: "appleCoords",
+    get: function get() {
+      return this.stage.apple;
     }
   }]);
 
@@ -571,6 +561,82 @@ __webpack_require__.r(__webpack_exports__);
 
 var body = document.querySelector('body');
 _game_js__WEBPACK_IMPORTED_MODULE_0__["Game"].create(body);
+
+/***/ }),
+
+/***/ "./src/score.js":
+/*!**********************!*\
+  !*** ./src/score.js ***!
+  \**********************/
+/*! exports provided: Score */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Score", function() { return Score; });
+/* harmony import */ var _text__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./text */ "./src/text.js");
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+
+var Score =
+/*#__PURE__*/
+function (_Text) {
+  _inherits(Score, _Text);
+
+  _createClass(Score, null, [{
+    key: "create",
+
+    /**
+     * @param {object} options
+     * @param {HTMLCanvasElement} options.root
+     */
+    value: function create(options) {
+      var score = new Score(options);
+      score.render();
+      return score;
+    }
+    /**
+     * @param {object} options
+     * @param {HTMLCanvasElement} options.root
+     */
+
+  }]);
+
+  function Score(options) {
+    var _this;
+
+    _classCallCheck(this, Score);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Score).call(this, options));
+    _this.textContent = options.score;
+    return _this;
+  }
+
+  _createClass(Score, [{
+    key: "setScore",
+    value: function setScore(score) {
+      this.textContent = "".concat(score);
+    }
+  }]);
+
+  return Score;
+}(_text__WEBPACK_IMPORTED_MODULE_0__["Text"]);
 
 /***/ }),
 
@@ -817,13 +883,16 @@ function () {
 /*!**********************!*\
   !*** ./src/stage.js ***!
   \**********************/
-/*! exports provided: Stage */
+/*! exports provided: GAME_MODES, Stage */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "GAME_MODES", function() { return GAME_MODES; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Stage", function() { return Stage; });
-/* harmony import */ var _gameField_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./gameField.js */ "./src/gameField.js");
+/* harmony import */ var _gameField__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./gameField */ "./src/gameField.js");
+/* harmony import */ var _score__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./score */ "./src/score.js");
+/* harmony import */ var _welcomeScreen__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./welcomeScreen */ "./src/welcomeScreen.js");
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -831,13 +900,19 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
 
+
+
 /**
  * @typedef Params
- * @param {DOMElement} mp
+ * @param {DOMElement} root
  * @param {Number} width
  * @param {Number} height
  */
 
+var GAME_MODES = {
+  PENDING: 0,
+  STARTED: 1
+};
 var Stage =
 /*#__PURE__*/
 function () {
@@ -845,44 +920,74 @@ function () {
     key: "create",
 
     /**
-     * @param {DOMElement} mp
+     * @param {DOMElement} root
      * @param {Number} width
      * @param {Number} height
      */
-    value: function create(mp) {
-      var w = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 320;
-      var h = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 320;
-      var stage = new Stage(mp, w, h);
+    value: function create(options) {
+      var stage = new Stage(options);
       stage.init();
       return stage;
     }
     /**
-     * @param {DOMElement} mp
-     * @param {Number} width
-     * @param {Number} height
+     * @param {object} o
+     * @param {DOMElement} o.root
+     * @param {Number} o.width
+     * @param {Number} o.height
+     * @param {function} o.onWelcomeScreenClick
      */
 
   }]);
 
-  function Stage(mp, width, height) {
+  function Stage(_ref) {
+    var root = _ref.root,
+        _ref$width = _ref.width,
+        width = _ref$width === void 0 ? 320 : _ref$width,
+        _ref$height = _ref.height,
+        height = _ref$height === void 0 ? 480 : _ref$height,
+        onWelcomeScreenClick = _ref.onWelcomeScreenClick;
+
     _classCallCheck(this, Stage);
 
     this.cellW = 16;
     this.cellH = 16;
-    this.mp = mp;
+    this.root = root;
     this.width = width;
     this.height = height;
+    this.mode = GAME_MODES.PENDING;
+    this.onWelcomeScreenClick = onWelcomeScreenClick;
   }
 
   _createClass(Stage, [{
+    key: "setMode",
+    value: function setMode(gameMode) {
+      this.mode = gameMode;
+      this.render();
+    }
+  }, {
+    key: "getRandomCell",
+    value: function getRandomCell() {
+      var col = Math.ceil(Math.random() * this.widthInCells - 1);
+      var row = Math.ceil(Math.random() * this.heightInCells - 1);
+      return {
+        col: col,
+        row: row
+      };
+    }
+  }, {
     key: "isEat",
-    value: function isEat(_ref) {
-      var col = _ref.col,
-          row = _ref.row;
+    value: function isEat(_ref2) {
+      var col = _ref2.col,
+          row = _ref2.row;
       return this.field.checkApple({
         col: col,
         row: row
       });
+    }
+  }, {
+    key: "updateApple",
+    value: function updateApple() {
+      this.appleCoords = this.getRandomCell();
     }
     /**
      *
@@ -893,8 +998,12 @@ function () {
 
   }, {
     key: "renderApple",
-    value: function renderApple(coords) {
-      this.field.renderApple(coords);
+    value: function renderApple() {
+      if (!this.appleCoords) {
+        this.updateApple();
+      }
+
+      this.field.renderApple(this.appleCoords);
     }
     /**
      * @returns {DOMElement}
@@ -904,7 +1013,17 @@ function () {
     key: "init",
     value: function init() {
       this.createCanvas();
-      this.drawField();
+      this.render();
+    }
+  }, {
+    key: "renderWelcomeScreen",
+    value: function renderWelcomeScreen() {
+      this.welcomeScreen = _welcomeScreen__WEBPACK_IMPORTED_MODULE_2__["WelcomeScreen"].create({
+        canvas: this.canvas,
+        w: this.width,
+        h: this.height,
+        onClick: this.onWelcomeScreenClick
+      });
     }
   }, {
     key: "createCanvas",
@@ -913,17 +1032,37 @@ function () {
       this.canvas.width = this.width;
       this.canvas.height = this.height;
       this.canvas.style.border = '1px solid red';
-      this.mp.appendChild(this.canvas);
+      this.root.appendChild(this.canvas);
     }
   }, {
     key: "render",
     value: function render() {
-      this.drawField();
+      switch (this.mode) {
+        case GAME_MODES.STARTED:
+          this.drawField();
+          this.renderApple();
+          this.drawScore();
+          break;
+
+        case GAME_MODES.PENDING:
+          {
+            this.renderWelcomeScreen();
+            break;
+          }
+      }
+    }
+  }, {
+    key: "drawScore",
+    value: function drawScore() {
+      this.score = _score__WEBPACK_IMPORTED_MODULE_1__["Score"].create({
+        canvas: this.canvas,
+        score: this.score
+      });
     }
   }, {
     key: "drawField",
     value: function drawField() {
-      this.field = _gameField_js__WEBPACK_IMPORTED_MODULE_0__["GameField"].create({
+      this.field = _gameField__WEBPACK_IMPORTED_MODULE_0__["GameField"].create({
         canvas: this.canvas,
         width: this.width,
         height: this.height,
@@ -949,14 +1088,194 @@ function () {
         h: this.cellH
       };
     }
-  }, {
-    key: "apple",
-    get: function get() {
-      return this.field.apple;
-    }
   }]);
 
   return Stage;
+}();
+
+/***/ }),
+
+/***/ "./src/text.js":
+/*!*********************!*\
+  !*** ./src/text.js ***!
+  \*********************/
+/*! exports provided: Text */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Text", function() { return Text; });
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var Text =
+/*#__PURE__*/
+function () {
+  _createClass(Text, null, [{
+    key: "create",
+
+    /**
+     * @param {object} options
+     * @param {HTMLCanvasElement} options.root
+     */
+    value: function create(options) {
+      var score = new Text(options);
+      score.render();
+      return score;
+    }
+    /**
+     * @param {object} options
+     * @param {HTMLCanvasElement} options.root
+     */
+
+  }]);
+
+  function Text(_ref) {
+    var canvas = _ref.canvas,
+        _ref$x = _ref.x,
+        x = _ref$x === void 0 ? 0 : _ref$x,
+        _ref$y = _ref.y,
+        y = _ref$y === void 0 ? 0 : _ref$y,
+        w = _ref.w,
+        _ref$h = _ref.h,
+        h = _ref$h === void 0 ? 22 : _ref$h,
+        textContent = _ref.textContent,
+        _ref$color = _ref.color,
+        color = _ref$color === void 0 ? 'red' : _ref$color,
+        _ref$textAlign = _ref.textAlign,
+        textAlign = _ref$textAlign === void 0 ? 'left' : _ref$textAlign;
+
+    _classCallCheck(this, Text);
+
+    this.ctx = canvas.getContext('2d');
+    this.x = x;
+    this.y = y;
+    this.h = h;
+    this.w = w;
+    this.textColor = color;
+    this.textContent = textContent;
+    this.textAlign = textAlign;
+  }
+
+  _createClass(Text, [{
+    key: "render",
+    value: function render() {
+      this.ctx.fillStyle = this.textColor;
+      this.ctx.font = "".concat(this.h, "px Helvetica");
+      this.ctx.textAlign = this.textAlign;
+      this.ctx.fillText(this.textContent, this.x, this.y + this.h);
+    }
+  }, {
+    key: "setText",
+    value: function setText(textContent) {
+      this.textContent = textContent;
+    }
+  }, {
+    key: "setAlign",
+    value: function setAlign(align) {
+      this.textAlign = align;
+    }
+  }, {
+    key: "setColor",
+    value: function setColor(color) {
+      this.textColor = color;
+    }
+  }]);
+
+  return Text;
+}();
+
+/***/ }),
+
+/***/ "./src/welcomeScreen.js":
+/*!******************************!*\
+  !*** ./src/welcomeScreen.js ***!
+  \******************************/
+/*! exports provided: WelcomeScreen */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "WelcomeScreen", function() { return WelcomeScreen; });
+/* harmony import */ var _text__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./text */ "./src/text.js");
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+
+var WelcomeScreen =
+/*#__PURE__*/
+function () {
+  _createClass(WelcomeScreen, null, [{
+    key: "create",
+    value: function create(options) {
+      var screen = new WelcomeScreen(options);
+      screen.addEventListeners();
+      screen.render();
+      return screen;
+    }
+  }]);
+
+  function WelcomeScreen(_ref) {
+    var canvas = _ref.canvas,
+        w = _ref.w,
+        h = _ref.h,
+        onClick = _ref.onClick;
+
+    _classCallCheck(this, WelcomeScreen);
+
+    this.canvas = canvas;
+    this.ctx = canvas.getContext('2d');
+    this.x = 0;
+    this.y = 0;
+    this.w = w;
+    this.h = h;
+    this.onClick = onClick;
+    this.clickHandler = this.clickHandler.bind(this);
+  }
+
+  _createClass(WelcomeScreen, [{
+    key: "render",
+    value: function render() {
+      this.drawBackground();
+      this.renderText();
+    }
+  }, {
+    key: "renderText",
+    value: function renderText() {
+      this.text = _text__WEBPACK_IMPORTED_MODULE_0__["Text"].create({
+        canvas: this.canvas,
+        x: this.w / 2,
+        y: this.h / 2,
+        textContent: 'Start',
+        textAlign: 'center'
+      });
+    }
+  }, {
+    key: "drawBackground",
+    value: function drawBackground() {
+      this.ctx.fillStyle = 'rgba(0,0,0, .2)';
+      this.ctx.fillRect(this.x, this.y, this.w, this.h);
+    }
+  }, {
+    key: "clickHandler",
+    value: function clickHandler() {
+      this.onClick();
+      this.canvas.removeEventListener('click', this.clickHandler);
+    }
+  }, {
+    key: "addEventListeners",
+    value: function addEventListeners() {
+      this.canvas.addEventListener('click', this.clickHandler);
+    }
+  }]);
+
+  return WelcomeScreen;
 }();
 
 /***/ })
