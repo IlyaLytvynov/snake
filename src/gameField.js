@@ -1,4 +1,5 @@
 import { Cell } from './cell.js';
+
 /**
  * @typedef Params
  * @param {DOMElement} mp
@@ -13,7 +14,7 @@ export class GameField {
    * @param {Number} height
    */
   static create(options) {
-    const stage = new GameField(options);
+    const stage = new GameField({ ...options });
     stage.render();
     return stage;
   }
@@ -23,20 +24,13 @@ export class GameField {
    * @param {Number} width
    * @param {Number} height
    */
-  constructor({ canvas, width, height, cellW, cellH }) {
-    this.cellW = cellW;
-    this.cellH = cellH;
+  constructor({ canvas, width, height }) {
+    this.cellSize = Math.floor(width / 20);
     this.canvas = canvas;
     this.width = width;
     this.height = height;
-  }
-
-  get heightInCells() {
-    return this.height / this.cellH;
-  }
-
-  get widthInCells() {
-    return this.width / this.cellW;
+    this.heightInCells = Math.floor(this.height / this.cellSize);
+    this.widthInCells = Math.floor(this.width / this.cellSize);
   }
 
   checkApple({ col, row }) {
@@ -54,8 +48,8 @@ export class GameField {
       canvas: this.canvas,
       col,
       row,
-      w: this.cellW,
-      h: this.cellH,
+      w: this.cellSize,
+      h: this.cellSize,
       bgColor: 'red'
     });
   }
@@ -71,8 +65,8 @@ export class GameField {
           canvas: this.canvas,
           col,
           row,
-          w: this.cellW,
-          h: this.cellH
+          w: this.cellSize,
+          h: this.cellSize
         });
       }
     }

@@ -1,0 +1,1 @@
+{"version":3,"sources":["webpack:///./src/game.css"],"names":[],"mappings":"AAAA,gBAAgB,YAAY,aAAa,oBAAoB,oBAAoB,aAAa,uBAAuB,uBAAuB,mB","file":"main.css","sourcesContent":[".game-container{width:100vw;height:100vh;display:-webkit-box;display:-ms-flexbox;display:flex;border:1px solid green;justify-content:center;align-items:center}"],"sourceRoot":""}

@@ -1,5 +1,6 @@
 import { Stage, GAME_MODES } from './stage.js';
 import { Snake, DIRECTIONS } from './snake.js';
+import './game.css';
 
 export class Game {
   /**
@@ -22,17 +23,20 @@ export class Game {
     this.lastTime = Date.now();
   }
 
-  get appleCoords() {
-    return this.stage.apple;
+  init() {
+    this.createGameContainer();
+    this.createStage();
   }
 
-  init() {
-    this.createStage();
+  createGameContainer() {
+    this.container = document.createElement('div');
+    this.container.classList.add('game-container');
+    this.mp.append(this.container);
   }
 
   createStage() {
     this.stage = Stage.create({
-      root: this.mp,
+      root: this.container,
       onWelcomeScreenClick: () => this.startGame()
     });
   }

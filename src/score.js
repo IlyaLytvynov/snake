@@ -1,5 +1,5 @@
 import { Text } from './text';
-
+import { normalizeScore } from './utils';
 export class Score extends Text {
   /**
    * @param {object} options
@@ -17,10 +17,12 @@ export class Score extends Text {
    */
   constructor(options) {
     super(options);
-    this.textContent = options.score;
+    this.textContent = normalizeScore(options.score);
+    this.textColor = 'magenta';
+    this.x = 10;
   }
 
   setScore(score) {
-    this.textContent = `${score}`;
+    this.textContent = normalizeScore(score);
   }
 }

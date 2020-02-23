@@ -207,6 +207,17 @@ function () {
 
 /***/ }),
 
+/***/ "./src/game.css":
+/*!**********************!*\
+  !*** ./src/game.css ***!
+  \**********************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// extracted by mini-css-extract-plugin
+
+/***/ }),
+
 /***/ "./src/game.js":
 /*!*********************!*\
   !*** ./src/game.js ***!
@@ -219,11 +230,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Game", function() { return Game; });
 /* harmony import */ var _stage_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./stage.js */ "./src/stage.js");
 /* harmony import */ var _snake_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./snake.js */ "./src/snake.js");
+/* harmony import */ var _game_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./game.css */ "./src/game.css");
+/* harmony import */ var _game_css__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_game_css__WEBPACK_IMPORTED_MODULE_2__);
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
 
 
 
@@ -260,7 +274,15 @@ function () {
   _createClass(Game, [{
     key: "init",
     value: function init() {
+      this.createGameContainer();
       this.createStage();
+    }
+  }, {
+    key: "createGameContainer",
+    value: function createGameContainer() {
+      this.container = document.createElement('div');
+      this.container.classList.add('game-container');
+      this.mp.append(this.container);
     }
   }, {
     key: "createStage",
@@ -268,7 +290,7 @@ function () {
       var _this = this;
 
       this.stage = _stage_js__WEBPACK_IMPORTED_MODULE_0__["Stage"].create({
-        root: this.mp,
+        root: this.container,
         onWelcomeScreenClick: function onWelcomeScreenClick() {
           return _this.startGame();
         }
@@ -406,11 +428,6 @@ function () {
         }
       });
     }
-  }, {
-    key: "appleCoords",
-    get: function get() {
-      return this.stage.apple;
-    }
   }]);
 
   return Game;
@@ -429,6 +446,12 @@ function () {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "GameField", function() { return GameField; });
 /* harmony import */ var _cell_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./cell.js */ "./src/cell.js");
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -455,7 +478,7 @@ function () {
      * @param {Number} height
      */
     value: function create(options) {
-      var stage = new GameField(options);
+      var stage = new GameField(_objectSpread({}, options));
       stage.render();
       return stage;
     }
@@ -470,17 +493,16 @@ function () {
   function GameField(_ref) {
     var canvas = _ref.canvas,
         width = _ref.width,
-        height = _ref.height,
-        cellW = _ref.cellW,
-        cellH = _ref.cellH;
+        height = _ref.height;
 
     _classCallCheck(this, GameField);
 
-    this.cellW = cellW;
-    this.cellH = cellH;
+    this.cellSize = Math.floor(width / 20);
     this.canvas = canvas;
     this.width = width;
     this.height = height;
+    this.heightInCells = Math.floor(this.height / this.cellSize);
+    this.widthInCells = Math.floor(this.width / this.cellSize);
   }
 
   _createClass(GameField, [{
@@ -506,8 +528,8 @@ function () {
         canvas: this.canvas,
         col: col,
         row: row,
-        w: this.cellW,
-        h: this.cellH,
+        w: this.cellSize,
+        h: this.cellSize,
         bgColor: 'red'
       });
     }
@@ -525,21 +547,11 @@ function () {
             canvas: this.canvas,
             col: col,
             row: row,
-            w: this.cellW,
-            h: this.cellH
+            w: this.cellSize,
+            h: this.cellSize
           });
         }
       }
-    }
-  }, {
-    key: "heightInCells",
-    get: function get() {
-      return this.height / this.cellH;
-    }
-  }, {
-    key: "widthInCells",
-    get: function get() {
-      return this.width / this.cellW;
     }
   }]);
 
@@ -575,6 +587,7 @@ _game_js__WEBPACK_IMPORTED_MODULE_0__["Game"].create(body);
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Score", function() { return Score; });
 /* harmony import */ var _text__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./text */ "./src/text.js");
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./utils */ "./src/utils.js");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -592,6 +605,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
 
 
 var Score =
@@ -624,19 +638,61 @@ function (_Text) {
     _classCallCheck(this, Score);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Score).call(this, options));
-    _this.textContent = options.score;
+    _this.textContent = Object(_utils__WEBPACK_IMPORTED_MODULE_1__["normalizeScore"])(options.score);
+    _this.textColor = 'magenta';
+    _this.x = 10;
     return _this;
   }
 
   _createClass(Score, [{
     key: "setScore",
     value: function setScore(score) {
-      this.textContent = "".concat(score);
+      this.textContent = Object(_utils__WEBPACK_IMPORTED_MODULE_1__["normalizeScore"])(score);
     }
   }]);
 
   return Score;
 }(_text__WEBPACK_IMPORTED_MODULE_0__["Text"]);
+
+/***/ }),
+
+/***/ "./src/screen.js":
+/*!***********************!*\
+  !*** ./src/screen.js ***!
+  \***********************/
+/*! exports provided: Screen */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Screen", function() { return Screen; });
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var Screen =
+/*#__PURE__*/
+function () {
+  function Screen() {
+    _classCallCheck(this, Screen);
+  }
+
+  _createClass(Screen, null, [{
+    key: "getViewportSize",
+    value: function getViewportSize() {
+      var MAX_WIDTH = 1600;
+      var MAX_HEIGHT = 1600;
+      return {
+        width: Math.min(window.innerWidth, MAX_WIDTH),
+        height: Math.min(window.innerHeight, MAX_HEIGHT)
+      };
+    }
+  }]);
+
+  return Screen;
+}();
 
 /***/ }),
 
@@ -713,9 +769,7 @@ function () {
 
     this._canvas = canvas;
     this._cellSize = cellSize;
-    this._length = 2;
     this._direction = direction;
-    this._collision = false;
     this.onMove = onMove;
     this.onSelfCollision = onSelfCollision;
   }
@@ -723,7 +777,7 @@ function () {
   _createClass(Snake, [{
     key: "init",
     value: function init() {
-      this._segments = [this.createSegment(7, 5, true), this.createSegment(6, 5), this.createSegment(5, 5)];
+      this._segments = [this.createSegment(7, 5), this.createSegment(6, 5), this.createSegment(5, 5)];
     }
   }, {
     key: "checkSelfCollision",
@@ -743,7 +797,7 @@ function () {
       return hasCollision;
     }
     /**
-     * @param {string} dir
+     * @param {DIRECTIONS} dir
      */
 
   }, {
@@ -763,16 +817,6 @@ function () {
       this._segments.push(this.createSegment(col, row));
     }
     /**
-     * @param {boolean} collision
-     *
-     */
-
-  }, {
-    key: "setCollision",
-    value: function setCollision(collision) {
-      this._collision = collision;
-    }
-    /**
      * @return {Cell}
      */
 
@@ -786,15 +830,12 @@ function () {
   }, {
     key: "createSegment",
     value: function createSegment(col, row) {
-      var _this$_cellSize = this._cellSize,
-          w = _this$_cellSize.w,
-          h = _this$_cellSize.h;
       var segment = _cell_js__WEBPACK_IMPORTED_MODULE_0__["Cell"].createWithColor({
         canvas: this._canvas,
         col: col,
         row: row,
-        w: w,
-        h: h,
+        w: this._cellSize,
+        h: this._cellSize,
         bgColor: 'aqua'
       });
       return segment;
@@ -806,11 +847,6 @@ function () {
           col = _this$getNewHeadCoord2.col,
           row = _this$getNewHeadCoord2.row;
 
-      this.moveHead(col, row);
-    }
-  }, {
-    key: "moveHead",
-    value: function moveHead(col, row) {
       this._segments.unshift(this.createSegment(col, row));
 
       this._segments.pop();
@@ -863,11 +899,6 @@ function () {
       return true;
     }
   }, {
-    key: "segments",
-    get: function get() {
-      return this._segments;
-    }
-  }, {
     key: "head",
     get: function get() {
       return this._segments[0];
@@ -893,11 +924,19 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _gameField__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./gameField */ "./src/gameField.js");
 /* harmony import */ var _score__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./score */ "./src/score.js");
 /* harmony import */ var _welcomeScreen__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./welcomeScreen */ "./src/welcomeScreen.js");
+/* harmony import */ var _screen__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./screen */ "./src/screen.js");
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
 
 
 
@@ -921,11 +960,17 @@ function () {
 
     /**
      * @param {DOMElement} root
-     * @param {Number} width
-     * @param {Number} height
      */
     value: function create(options) {
-      var stage = new Stage(options);
+      var _Screen$getViewportSi = _screen__WEBPACK_IMPORTED_MODULE_3__["Screen"].getViewportSize(),
+          width = _Screen$getViewportSi.width,
+          height = _Screen$getViewportSi.height;
+
+      console.log(width, height);
+      var stage = new Stage(_objectSpread({}, options, {
+        width: width,
+        height: height
+      }));
       stage.init();
       return stage;
     }
@@ -941,20 +986,16 @@ function () {
 
   function Stage(_ref) {
     var root = _ref.root,
-        _ref$width = _ref.width,
-        width = _ref$width === void 0 ? 320 : _ref$width,
-        _ref$height = _ref.height,
-        height = _ref$height === void 0 ? 480 : _ref$height,
-        onWelcomeScreenClick = _ref.onWelcomeScreenClick;
+        onWelcomeScreenClick = _ref.onWelcomeScreenClick,
+        width = _ref.width,
+        height = _ref.height;
 
     _classCallCheck(this, Stage);
 
-    this.cellW = 16;
-    this.cellH = 16;
     this.root = root;
+    this.mode = GAME_MODES.PENDING;
     this.width = width;
     this.height = height;
-    this.mode = GAME_MODES.PENDING;
     this.onWelcomeScreenClick = onWelcomeScreenClick;
   }
 
@@ -1065,9 +1106,7 @@ function () {
       this.field = _gameField__WEBPACK_IMPORTED_MODULE_0__["GameField"].create({
         canvas: this.canvas,
         width: this.width,
-        height: this.height,
-        cellH: this.cellH,
-        cellW: this.cellW
+        height: this.height
       });
     }
   }, {
@@ -1083,10 +1122,7 @@ function () {
   }, {
     key: "cellSize",
     get: function get() {
-      return {
-        w: this.cellW,
-        h: this.cellH
-      };
+      return this.field.cellSize;
     }
   }]);
 
@@ -1187,6 +1223,40 @@ function () {
 
   return Text;
 }();
+
+/***/ }),
+
+/***/ "./src/utils.js":
+/*!**********************!*\
+  !*** ./src/utils.js ***!
+  \**********************/
+/*! exports provided: getCellColor, normalizeScore */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getCellColor", function() { return getCellColor; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "normalizeScore", function() { return normalizeScore; });
+var getCellColor = function getCellColor(col) {
+  var color = 'white';
+
+  if (col % 2 === 0) {
+    color = 'white';
+  }
+
+  return color;
+};
+var normalizeScore = function normalizeScore(score) {
+  if (score < 10) {
+    return "00".concat(score);
+  }
+
+  if (score < 100) {
+    return "0".concat(score);
+  }
+
+  return "".concat(score);
+};
 
 /***/ }),
 

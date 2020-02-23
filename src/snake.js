@@ -28,21 +28,15 @@ export class Snake {
   }) {
     this._canvas = canvas;
     this._cellSize = cellSize;
-    this._length = 2;
     this._direction = direction;
-    this._collision = false;
 
     this.onMove = onMove;
     this.onSelfCollision = onSelfCollision;
   }
 
-  get segments() {
-    return this._segments;
-  }
-
   init() {
     this._segments = [
-      this.createSegment(7, 5, true),
+      this.createSegment(7, 5),
       this.createSegment(6, 5),
       this.createSegment(5, 5)
     ];
@@ -64,7 +58,7 @@ export class Snake {
   }
 
   /**
-   * @param {string} dir
+   * @param {DIRECTIONS} dir
    */
   setDirection(dir) {
     if (this.isNewDirectionValid(dir)) {
@@ -75,14 +69,6 @@ export class Snake {
   grow() {
     const { col, row } = this.getNewHeadCoordinates();
     this._segments.push(this.createSegment(col, row));
-  }
-
-  /**
-   * @param {boolean} collision
-   *
-   */
-  setCollision(collision) {
-    this._collision = collision;
   }
 
   /**
@@ -99,13 +85,12 @@ export class Snake {
   }
 
   createSegment(col, row) {
-    const { w, h } = this._cellSize;
     const segment = Cell.createWithColor({
       canvas: this._canvas,
       col,
       row,
-      w,
-      h,
+      w: this._cellSize,
+      h: this._cellSize,
       bgColor: 'aqua'
     });
     return segment;
@@ -113,10 +98,6 @@ export class Snake {
 
   move() {
     const { col, row } = this.getNewHeadCoordinates();
-    this.moveHead(col, row);
-  }
-
-  moveHead(col, row) {
     this._segments.unshift(this.createSegment(col, row));
     this._segments.pop();
   }

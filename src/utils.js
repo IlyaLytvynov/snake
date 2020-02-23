@@ -5,3 +5,13 @@ export const getCellColor = col => {
   }
   return color;
 };
+
+export const normalizeScore = score => {
+  if (score < 10) {
+    return `00${score}`;
+  }
+  if (score < 100) {
+    return `0${score}`;
+  }
+  return `${score}`;
+};

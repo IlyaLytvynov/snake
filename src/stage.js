@@ -1,6 +1,7 @@
 import { GameField } from './gameField';
 import { Score } from './score';
 import { WelcomeScreen } from './welcomeScreen';
+import { Screen } from './screen';
 /**
  * @typedef Params
  * @param {DOMElement} root
@@ -15,11 +16,11 @@ export const GAME_MODES = {
 export class Stage {
   /**
    * @param {DOMElement} root
-   * @param {Number} width
-   * @param {Number} height
    */
   static create(options) {
-    const stage = new Stage(options);
+    const { width, height } = Screen.getViewportSize();
+    console.log(width, height);
+    const stage = new Stage({ ...options, width, height });
     stage.init();
     return stage;
   }
@@ -31,14 +32,11 @@ export class Stage {
    * @param {Number} o.height
    * @param {function} o.onWelcomeScreenClick
    */
-  constructor({ root, width = 320, height = 480, onWelcomeScreenClick }) {
-    this.cellW = 16;
-    this.cellH = 16;
-
+  constructor({ root, onWelcomeScreenClick, width, height }) {
     this.root = root;
+    this.mode = GAME_MODES.PENDING;
     this.width = width;
     this.height = height;
-    this.mode = GAME_MODES.PENDING;
     this.onWelcomeScreenClick = onWelcomeScreenClick;
   }
 
@@ -51,7 +49,7 @@ export class Stage {
   }
 
   get cellSize() {
-    return { w: this.cellW, h: this.cellH };
+    return this.field.cellSize;
   }
 
   setMode(gameMode) {
@@ -134,9 +132,7 @@ export class Stage {
     this.field = GameField.create({
       canvas: this.canvas,
       width: this.width,
-      height: this.height,
-      cellH: this.cellH,
-      cellW: this.cellW
+      height: this.height
     });
   }
 }
