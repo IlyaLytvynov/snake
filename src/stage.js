@@ -1,6 +1,6 @@
 import { GameField } from './gameField';
 import { Score } from './score';
-import { WelcomeScreen } from './welcomeScreen';
+import { NotificationScreen } from './notificationScreen';
 import { Screen } from './screen';
 import { sizeGenerator } from './utils';
 /**
@@ -12,7 +12,8 @@ import { sizeGenerator } from './utils';
 
 export const GAME_MODES = {
   PENDING: 0,
-  STARTED: 1
+  STARTED: 1,
+  OVER: 2
 };
 export class Stage {
   /**
@@ -92,10 +93,11 @@ export class Stage {
   }
 
   renderWelcomeScreen() {
-    this.welcomeScreen = WelcomeScreen.create({
+    this.notificationScreen = NotificationScreen.create({
       canvas: this.canvas,
       w: this.width,
       h: this.height,
+      textContent: 'START GAME',
       onClick: this.onWelcomeScreenClick
     });
   }
@@ -104,7 +106,6 @@ export class Stage {
     this.canvas = document.createElement('canvas');
     this.canvas.width = this.width;
     this.canvas.height = this.height;
-    this.canvas.style.border = '1px solid red';
 
     this.root.appendChild(this.canvas);
   }
@@ -116,15 +117,28 @@ export class Stage {
         this.renderApple();
         this.drawScore();
         break;
-      case GAME_MODES.PENDING: {
+      case GAME_MODES.PENDING:
         this.renderWelcomeScreen();
         break;
-      }
+      case GAME_MODES.OVER:
+        this.renderGameOverScreen();
+        break;
     }
   }
 
   drawScore() {
     this.score = Score.create({ canvas: this.canvas, score: this.score });
+  }
+
+  renderGameOverScreen() {
+    this.notificationScreen = NotificationScreen.create({
+      canvas: this.canvas,
+      textContent: 'GAME OVER',
+      w: this.width,
+      h: this.height,
+      textColor: 'magenta',
+      onClick: this.onWelcomeScreenClick
+    });
   }
 
   drawField() {

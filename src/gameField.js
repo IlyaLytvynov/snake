@@ -1,4 +1,5 @@
 import { Cell } from './cell.js';
+import { Apple } from './apple';
 
 /**
  * @typedef Params
@@ -44,13 +45,12 @@ export class GameField {
    * @param {number} coords.row
    */
   renderApple({ col, row }) {
-    this.apple = Cell.createWithColor({
+    this.apple = Apple.create({
       canvas: this.canvas,
       col,
       row,
       w: this.cellSize,
-      h: this.cellSize,
-      bgColor: 'red'
+      h: this.cellSize
     });
   }
 

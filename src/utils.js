@@ -17,7 +17,7 @@ export const normalizeScore = score => {
 };
 
 export const sizeGenerator = ({ width, height }) => {
-  const CELL_COUNT = 20;
+  const CELL_COUNT = 16;
   const cellSize = Math.floor(width / CELL_COUNT);
   const adjustedWidth = cellSize * CELL_COUNT;
   const adjustedHeight = Math.floor(height / cellSize) * cellSize;

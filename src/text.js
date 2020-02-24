@@ -20,7 +20,7 @@ export class Text {
     w,
     h = 22,
     textContent,
-    color = 'red',
+    textColor = 'red',
     textAlign = 'left'
   }) {
     this.ctx = canvas.getContext('2d');
@@ -28,7 +28,7 @@ export class Text {
     this.y = y;
     this.h = h;
     this.w = w;
-    this.textColor = color;
+    this.textColor = textColor;
     this.textContent = textContent;
     this.textAlign = textAlign;
   }

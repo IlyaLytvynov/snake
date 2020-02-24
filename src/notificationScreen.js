@@ -1,20 +1,22 @@
 import { Text } from './text';
 
-export class WelcomeScreen {
+export class NotificationScreen {
   static create(options) {
-    const screen = new WelcomeScreen(options);
+    const screen = new NotificationScreen(options);
     screen.addEventListeners();
     screen.render();
     return screen;
   }
 
-  constructor({ canvas, w, h, onClick }) {
+  constructor({ canvas, w, h, textContent, textColor, onClick }) {
     this.canvas = canvas;
     this.ctx = canvas.getContext('2d');
     this.x = 0;
     this.y = 0;
     this.w = w;
     this.h = h;
+    this.textContent = textContent;
+    this.textColor = textColor;
     this.onClick = onClick;
     this.clickHandler = this.clickHandler.bind(this);
   }
@@ -29,8 +31,9 @@ export class WelcomeScreen {
       canvas: this.canvas,
       x: this.w / 2,
       y: this.h / 2,
-      textContent: 'Start',
-      textAlign: 'center'
+      textContent: this.textContent,
+      textAlign: 'center',
+      textColor: this.textColor
     });
   }
 

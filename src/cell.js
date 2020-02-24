@@ -12,7 +12,7 @@ export class Cell {
     return cell;
   }
 
-  constructor({ canvas, col, row, w, h }) {
+  constructor({ canvas, col, row, w, h, bgColor = '#FFF' }) {
     this.ctx = canvas.getContext('2d');
     this.w = w;
     this.h = h;
@@ -20,8 +20,7 @@ export class Cell {
     this.row = row;
     this.x = col * this.w;
     this.y = row * this.h;
-
-    this.setDefaultColor();
+    this.color = bgColor;
   }
 
   /**
@@ -37,8 +36,9 @@ export class Cell {
   }
 
   render() {
-    this.drawRect();
-    this.ctx.strokeStyle = 'grey';
+    this.fillStyle = this.bgColor;
+    this.ctx.fillRect(this.x, this.y, this.w, this.h);
+    this.ctx.strokeStyle = '#FFF';
     this.ctx.strokeRect(this.x, this.y, this.w, this.h);
   }
 
@@ -47,11 +47,7 @@ export class Cell {
     this.render();
   }
 
-  drawRect() {
-    this.ctx.fillRect(this.x, this.y, this.w, this.h);
-  }
-
   setDefaultColor() {
-    this.ctx.fillStyle = this.col % 2 === 0 ? 'white' : 'white';
+    this.ctx.fillStyle = '#FFF';
   }
 }

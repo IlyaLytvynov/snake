@@ -86,6 +86,87 @@
 /************************************************************************/
 /******/ ({
 
+/***/ "./src/apple.js":
+/*!**********************!*\
+  !*** ./src/apple.js ***!
+  \**********************/
+/*! exports provided: Apple */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Apple", function() { return Apple; });
+/* harmony import */ var _cell__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./cell */ "./src/cell.js");
+/* harmony import */ var _palette__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./palette */ "./src/palette.js");
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+
+
+var Apple =
+/*#__PURE__*/
+function (_Cell) {
+  _inherits(Apple, _Cell);
+
+  _createClass(Apple, null, [{
+    key: "create",
+    value: function create(options) {
+      var apple = new Apple(options);
+      apple.render();
+      return apple;
+    }
+  }]);
+
+  function Apple(options) {
+    var _this;
+
+    _classCallCheck(this, Apple);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Apple).call(this, _objectSpread({}, options, {
+      bgColor: _palette__WEBPACK_IMPORTED_MODULE_1__["ACCENT"]
+    })));
+    _this.intervalId = null;
+    return _this;
+  }
+
+  _createClass(Apple, [{
+    key: "startShineInterval",
+    value: function startShineInterval() {
+      var _this2 = this;
+
+      window.clearInterval(this.intervalId);
+      this.intervalId = setInterval(function () {
+        _this2.bgColor = 'yellow';
+      }, 100);
+    }
+  }]);
+
+  return Apple;
+}(_cell__WEBPACK_IMPORTED_MODULE_0__["Cell"]);
+
+/***/ }),
+
 /***/ "./src/cell.js":
 /*!*********************!*\
   !*** ./src/cell.js ***!
@@ -150,7 +231,9 @@ function () {
         col = _ref3.col,
         row = _ref3.row,
         w = _ref3.w,
-        h = _ref3.h;
+        h = _ref3.h,
+        _ref3$bgColor = _ref3.bgColor,
+        bgColor = _ref3$bgColor === void 0 ? '#FFF' : _ref3$bgColor;
 
     _classCallCheck(this, Cell);
 
@@ -161,7 +244,7 @@ function () {
     this.row = row;
     this.x = col * this.w;
     this.y = row * this.h;
-    this.setDefaultColor();
+    this.color = bgColor;
   }
   /**
    * *
@@ -172,8 +255,9 @@ function () {
   _createClass(Cell, [{
     key: "render",
     value: function render() {
-      this.drawRect();
-      this.ctx.strokeStyle = 'grey';
+      this.fillStyle = this.bgColor;
+      this.ctx.fillRect(this.x, this.y, this.w, this.h);
+      this.ctx.strokeStyle = '#FFF';
       this.ctx.strokeRect(this.x, this.y, this.w, this.h);
     }
   }, {
@@ -183,14 +267,9 @@ function () {
       this.render();
     }
   }, {
-    key: "drawRect",
-    value: function drawRect() {
-      this.ctx.fillRect(this.x, this.y, this.w, this.h);
-    }
-  }, {
     key: "setDefaultColor",
     value: function setDefaultColor() {
-      this.ctx.fillStyle = this.col % 2 === 0 ? 'white' : 'white';
+      this.ctx.fillStyle = '#FFF';
     }
   }, {
     key: "color",
@@ -257,16 +336,17 @@ function () {
       return game;
     }
     /**
-     * @param {DOMElement} mp mountPoint where to render game
+     * @param {DOMElement} root mountPoint where to render game
      */
 
   }]);
 
-  function Game(mp) {
+  function Game(root) {
     _classCallCheck(this, Game);
 
-    this.mp = mp;
+    this.root = root;
     this.score = 0;
+    this.collision = false;
     this.fps = 3;
     this.lastTime = Date.now();
   }
@@ -282,7 +362,7 @@ function () {
     value: function createGameContainer() {
       this.container = document.createElement('div');
       this.container.classList.add('game-container');
-      this.mp.append(this.container);
+      this.root.append(this.container);
     }
   }, {
     key: "createStage",
@@ -299,10 +379,17 @@ function () {
   }, {
     key: "startGame",
     value: function startGame() {
-      this.stage.setMode(_stage_js__WEBPACK_IMPORTED_MODULE_0__["GAME_MODES"].STARTED);
+      this.reset();
       this.renderSnake();
       this.addEventListeners();
       this.loop();
+    }
+  }, {
+    key: "reset",
+    value: function reset() {
+      this.collision = false;
+      this.score = 0;
+      this.stage.setMode(_stage_js__WEBPACK_IMPORTED_MODULE_0__["GAME_MODES"].STARTED);
     }
   }, {
     key: "loop",
@@ -350,9 +437,8 @@ function () {
   }, {
     key: "stopGame",
     value: function stopGame() {
-      console.log(this.intervalId);
       window.cancelAnimationFrame(this.requestedFrame);
-      console.log('GAME OVER');
+      this.stage.setMode(_stage_js__WEBPACK_IMPORTED_MODULE_0__["GAME_MODES"].OVER);
     }
   }, {
     key: "renderSnake",
@@ -446,6 +532,7 @@ function () {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "GameField", function() { return GameField; });
 /* harmony import */ var _cell_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./cell.js */ "./src/cell.js");
+/* harmony import */ var _apple__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./apple */ "./src/apple.js");
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
@@ -457,6 +544,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
 
 
 /**
@@ -525,13 +613,12 @@ function () {
     value: function renderApple(_ref3) {
       var col = _ref3.col,
           row = _ref3.row;
-      this.apple = _cell_js__WEBPACK_IMPORTED_MODULE_0__["Cell"].createWithColor({
+      this.apple = _apple__WEBPACK_IMPORTED_MODULE_1__["Apple"].create({
         canvas: this.canvas,
         col: col,
         row: row,
         w: this.cellSize,
-        h: this.cellSize,
-        bgColor: 'red'
+        h: this.cellSize
       });
     }
   }, {
@@ -574,6 +661,124 @@ __webpack_require__.r(__webpack_exports__);
 
 var body = document.querySelector('body');
 _game_js__WEBPACK_IMPORTED_MODULE_0__["Game"].create(body);
+
+/***/ }),
+
+/***/ "./src/notificationScreen.js":
+/*!***********************************!*\
+  !*** ./src/notificationScreen.js ***!
+  \***********************************/
+/*! exports provided: NotificationScreen */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "NotificationScreen", function() { return NotificationScreen; });
+/* harmony import */ var _text__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./text */ "./src/text.js");
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+
+var NotificationScreen =
+/*#__PURE__*/
+function () {
+  _createClass(NotificationScreen, null, [{
+    key: "create",
+    value: function create(options) {
+      var screen = new NotificationScreen(options);
+      screen.addEventListeners();
+      screen.render();
+      return screen;
+    }
+  }]);
+
+  function NotificationScreen(_ref) {
+    var canvas = _ref.canvas,
+        w = _ref.w,
+        h = _ref.h,
+        textContent = _ref.textContent,
+        textColor = _ref.textColor,
+        onClick = _ref.onClick;
+
+    _classCallCheck(this, NotificationScreen);
+
+    this.canvas = canvas;
+    this.ctx = canvas.getContext('2d');
+    this.x = 0;
+    this.y = 0;
+    this.w = w;
+    this.h = h;
+    this.textContent = textContent;
+    this.textColor = textColor;
+    this.onClick = onClick;
+    this.clickHandler = this.clickHandler.bind(this);
+  }
+
+  _createClass(NotificationScreen, [{
+    key: "render",
+    value: function render() {
+      this.drawBackground();
+      this.renderText();
+    }
+  }, {
+    key: "renderText",
+    value: function renderText() {
+      this.text = _text__WEBPACK_IMPORTED_MODULE_0__["Text"].create({
+        canvas: this.canvas,
+        x: this.w / 2,
+        y: this.h / 2,
+        textContent: this.textContent,
+        textAlign: 'center',
+        textColor: this.textColor
+      });
+    }
+  }, {
+    key: "drawBackground",
+    value: function drawBackground() {
+      this.ctx.fillStyle = 'rgba(0,0,0, .2)';
+      this.ctx.fillRect(this.x, this.y, this.w, this.h);
+    }
+  }, {
+    key: "clickHandler",
+    value: function clickHandler() {
+      this.onClick();
+      this.canvas.removeEventListener('click', this.clickHandler);
+    }
+  }, {
+    key: "addEventListeners",
+    value: function addEventListeners() {
+      this.canvas.addEventListener('click', this.clickHandler);
+    }
+  }]);
+
+  return NotificationScreen;
+}();
+
+/***/ }),
+
+/***/ "./src/palette.js":
+/*!************************!*\
+  !*** ./src/palette.js ***!
+  \************************/
+/*! exports provided: ERROR, ACCENT, MAIN, SECONDARY, THIRDARY */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ERROR", function() { return ERROR; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ACCENT", function() { return ACCENT; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MAIN", function() { return MAIN; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SECONDARY", function() { return SECONDARY; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "THIRDARY", function() { return THIRDARY; });
+/* RGB */
+var ERROR = 'rgba(226, 21, 0, 1);';
+var ACCENT = 'rgba(68, 3, 129, 1)';
+var MAIN = 'rgba(9, 255, 0, 0.644)';
+var SECONDARY = 'rgba(48, 216, 245, 0.753)';
+var THIRDARY = 'rgba(48, 216, 245, 0.432)';
 
 /***/ }),
 
@@ -683,8 +888,8 @@ function () {
   _createClass(Screen, null, [{
     key: "getViewportSize",
     value: function getViewportSize() {
-      var MAX_WIDTH = 1600;
-      var MAX_HEIGHT = 1600;
+      var MAX_WIDTH = 1280;
+      var MAX_HEIGHT = 1280;
       return {
         width: Math.min(window.innerWidth, MAX_WIDTH),
         height: Math.min(window.innerHeight, MAX_HEIGHT)
@@ -709,6 +914,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DIRECTIONS", function() { return DIRECTIONS; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Snake", function() { return Snake; });
 /* harmony import */ var _cell_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./cell.js */ "./src/cell.js");
+/* harmony import */ var _palette_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./palette.js */ "./src/palette.js");
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
 
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
@@ -722,6 +928,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
 
 
 /**
@@ -778,7 +985,7 @@ function () {
   _createClass(Snake, [{
     key: "init",
     value: function init() {
-      this._segments = [this.createSegment(7, 5), this.createSegment(6, 5), this.createSegment(5, 5)];
+      this._segments = [this.createSegment(7, 5, 'red'), this.createSegment(6, 5), this.createSegment(5, 5)];
     }
   }, {
     key: "checkSelfCollision",
@@ -804,7 +1011,7 @@ function () {
   }, {
     key: "setDirection",
     value: function setDirection(dir) {
-      if (this.isNewDirectionValid(dir)) {
+      if (this.isDirectionValid(dir)) {
         this._direction = dir;
       }
     }
@@ -837,7 +1044,7 @@ function () {
         row: row,
         w: this._cellSize,
         h: this._cellSize,
-        bgColor: 'aqua'
+        bgColor: _palette_js__WEBPACK_IMPORTED_MODULE_1__["MAIN"]
       });
       return segment;
     }
@@ -887,8 +1094,8 @@ function () {
      */
 
   }, {
-    key: "isNewDirectionValid",
-    value: function isNewDirectionValid(newDir) {
+    key: "isDirectionValid",
+    value: function isDirectionValid(newDir) {
       if ((this._direction === DIRECTIONS.RIGHT || this._direction === DIRECTIONS.LEFT) && (newDir === DIRECTIONS.LEFT || newDir === DIRECTIONS.RIGHT)) {
         return false;
       }
@@ -924,7 +1131,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Stage", function() { return Stage; });
 /* harmony import */ var _gameField__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./gameField */ "./src/gameField.js");
 /* harmony import */ var _score__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./score */ "./src/score.js");
-/* harmony import */ var _welcomeScreen__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./welcomeScreen */ "./src/welcomeScreen.js");
+/* harmony import */ var _notificationScreen__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./notificationScreen */ "./src/notificationScreen.js");
 /* harmony import */ var _screen__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./screen */ "./src/screen.js");
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./utils */ "./src/utils.js");
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
@@ -953,7 +1160,8 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 var GAME_MODES = {
   PENDING: 0,
-  STARTED: 1
+  STARTED: 1,
+  OVER: 2
 };
 var Stage =
 /*#__PURE__*/
@@ -1065,10 +1273,11 @@ function () {
   }, {
     key: "renderWelcomeScreen",
     value: function renderWelcomeScreen() {
-      this.welcomeScreen = _welcomeScreen__WEBPACK_IMPORTED_MODULE_2__["WelcomeScreen"].create({
+      this.notificationScreen = _notificationScreen__WEBPACK_IMPORTED_MODULE_2__["NotificationScreen"].create({
         canvas: this.canvas,
         w: this.width,
         h: this.height,
+        textContent: 'START GAME',
         onClick: this.onWelcomeScreenClick
       });
     }
@@ -1078,7 +1287,6 @@ function () {
       this.canvas = document.createElement('canvas');
       this.canvas.width = this.width;
       this.canvas.height = this.height;
-      this.canvas.style.border = '1px solid red';
       this.root.appendChild(this.canvas);
     }
   }, {
@@ -1092,10 +1300,12 @@ function () {
           break;
 
         case GAME_MODES.PENDING:
-          {
-            this.renderWelcomeScreen();
-            break;
-          }
+          this.renderWelcomeScreen();
+          break;
+
+        case GAME_MODES.OVER:
+          this.renderGameOverScreen();
+          break;
       }
     }
   }, {
@@ -1104,6 +1314,18 @@ function () {
       this.score = _score__WEBPACK_IMPORTED_MODULE_1__["Score"].create({
         canvas: this.canvas,
         score: this.score
+      });
+    }
+  }, {
+    key: "renderGameOverScreen",
+    value: function renderGameOverScreen() {
+      this.notificationScreen = _notificationScreen__WEBPACK_IMPORTED_MODULE_2__["NotificationScreen"].create({
+        canvas: this.canvas,
+        textContent: 'GAME OVER',
+        w: this.width,
+        h: this.height,
+        textColor: 'magenta',
+        onClick: this.onWelcomeScreenClick
       });
     }
   }, {
@@ -1181,8 +1403,8 @@ function () {
         _ref$h = _ref.h,
         h = _ref$h === void 0 ? 22 : _ref$h,
         textContent = _ref.textContent,
-        _ref$color = _ref.color,
-        color = _ref$color === void 0 ? 'red' : _ref$color,
+        _ref$textColor = _ref.textColor,
+        textColor = _ref$textColor === void 0 ? 'red' : _ref$textColor,
         _ref$textAlign = _ref.textAlign,
         textAlign = _ref$textAlign === void 0 ? 'left' : _ref$textAlign;
 
@@ -1193,7 +1415,7 @@ function () {
     this.y = y;
     this.h = h;
     this.w = w;
-    this.textColor = color;
+    this.textColor = textColor;
     this.textContent = textContent;
     this.textAlign = textAlign;
   }
@@ -1263,7 +1485,7 @@ var normalizeScore = function normalizeScore(score) {
 var sizeGenerator = function sizeGenerator(_ref) {
   var width = _ref.width,
       height = _ref.height;
-  var CELL_COUNT = 20;
+  var CELL_COUNT = 16;
   var cellSize = Math.floor(width / CELL_COUNT);
   var adjustedWidth = cellSize * CELL_COUNT;
   var adjustedHeight = Math.floor(height / cellSize) * cellSize;
@@ -1273,96 +1495,6 @@ var sizeGenerator = function sizeGenerator(_ref) {
     width: adjustedWidth
   };
 };
-
-/***/ }),
-
-/***/ "./src/welcomeScreen.js":
-/*!******************************!*\
-  !*** ./src/welcomeScreen.js ***!
-  \******************************/
-/*! exports provided: WelcomeScreen */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "WelcomeScreen", function() { return WelcomeScreen; });
-/* harmony import */ var _text__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./text */ "./src/text.js");
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-
-var WelcomeScreen =
-/*#__PURE__*/
-function () {
-  _createClass(WelcomeScreen, null, [{
-    key: "create",
-    value: function create(options) {
-      var screen = new WelcomeScreen(options);
-      screen.addEventListeners();
-      screen.render();
-      return screen;
-    }
-  }]);
-
-  function WelcomeScreen(_ref) {
-    var canvas = _ref.canvas,
-        w = _ref.w,
-        h = _ref.h,
-        onClick = _ref.onClick;
-
-    _classCallCheck(this, WelcomeScreen);
-
-    this.canvas = canvas;
-    this.ctx = canvas.getContext('2d');
-    this.x = 0;
-    this.y = 0;
-    this.w = w;
-    this.h = h;
-    this.onClick = onClick;
-    this.clickHandler = this.clickHandler.bind(this);
-  }
-
-  _createClass(WelcomeScreen, [{
-    key: "render",
-    value: function render() {
-      this.drawBackground();
-      this.renderText();
-    }
-  }, {
-    key: "renderText",
-    value: function renderText() {
-      this.text = _text__WEBPACK_IMPORTED_MODULE_0__["Text"].create({
-        canvas: this.canvas,
-        x: this.w / 2,
-        y: this.h / 2,
-        textContent: 'Start',
-        textAlign: 'center'
-      });
-    }
-  }, {
-    key: "drawBackground",
-    value: function drawBackground() {
-      this.ctx.fillStyle = 'rgba(0,0,0, .2)';
-      this.ctx.fillRect(this.x, this.y, this.w, this.h);
-    }
-  }, {
-    key: "clickHandler",
-    value: function clickHandler() {
-      this.onClick();
-      this.canvas.removeEventListener('click', this.clickHandler);
-    }
-  }, {
-    key: "addEventListeners",
-    value: function addEventListeners() {
-      this.canvas.addEventListener('click', this.clickHandler);
-    }
-  }]);
-
-  return WelcomeScreen;
-}();
 
 /***/ })
 

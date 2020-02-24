@@ -1,4 +1,5 @@
 import { Cell } from './cell.js';
+import { MAIN } from './palette.js';
 /**
  * Directions enum
  * @readonly
@@ -36,7 +37,7 @@ export class Snake {
 
   init() {
     this._segments = [
-      this.createSegment(7, 5),
+      this.createSegment(7, 5, 'red'),
       this.createSegment(6, 5),
       this.createSegment(5, 5)
     ];
@@ -61,7 +62,7 @@ export class Snake {
    * @param {DIRECTIONS} dir
    */
   setDirection(dir) {
-    if (this.isNewDirectionValid(dir)) {
+    if (this.isDirectionValid(dir)) {
       this._direction = dir;
     }
   }
@@ -91,7 +92,7 @@ export class Snake {
       row,
       w: this._cellSize,
       h: this._cellSize,
-      bgColor: 'aqua'
+      bgColor: MAIN
     });
     return segment;
   }
@@ -125,7 +126,7 @@ export class Snake {
    * @param {number} newDir
    * @return {boolean}
    */
-  isNewDirectionValid(newDir) {
+  isDirectionValid(newDir) {
     if (
       (this._direction === DIRECTIONS.RIGHT ||
         this._direction === DIRECTIONS.LEFT) &&

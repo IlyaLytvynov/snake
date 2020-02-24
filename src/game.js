@@ -14,11 +14,12 @@ export class Game {
   }
 
   /**
-   * @param {DOMElement} mp mountPoint where to render game
+   * @param {DOMElement} root mountPoint where to render game
    */
-  constructor(mp) {
-    this.mp = mp;
+  constructor(root) {
+    this.root = root;
     this.score = 0;
+    this.collision = false;
     this.fps = 3;
     this.lastTime = Date.now();
   }
@@ -31,7 +32,7 @@ export class Game {
   createGameContainer() {
     this.container = document.createElement('div');
     this.container.classList.add('game-container');
-    this.mp.append(this.container);
+    this.root.append(this.container);
   }
 
   createStage() {
@@ -42,10 +43,16 @@ export class Game {
   }
 
   startGame() {
-    this.stage.setMode(GAME_MODES.STARTED);
+    this.reset();
     this.renderSnake();
     this.addEventListeners();
     this.loop();
+  }
+
+  reset() {
+    this.collision = false;
+    this.score = 0;
+    this.stage.setMode(GAME_MODES.STARTED);
   }
 
   loop() {
@@ -83,9 +90,8 @@ export class Game {
   }
 
   stopGame() {
-    console.log(this.intervalId);
     window.cancelAnimationFrame(this.requestedFrame);
-    console.log('GAME OVER');
+    this.stage.setMode(GAME_MODES.OVER);
   }
 
   renderSnake() {
