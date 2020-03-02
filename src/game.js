@@ -1,5 +1,6 @@
 import { Stage, GAME_MODES } from './stage.js';
-import { Snake, DIRECTIONS } from './snake.js';
+import { Snake } from './snake.js';
+import { ControlsFactory } from './controls/controlsFactory';
 import './game.css';
 
 export class Game {
@@ -22,6 +23,8 @@ export class Game {
     this.collision = false;
     this.fps = 3;
     this.lastTime = Date.now();
+
+    this.setDirection = this.setDirection.bind(this);
   }
 
   init() {
@@ -45,7 +48,7 @@ export class Game {
   startGame() {
     this.reset();
     this.renderSnake();
-    this.addEventListeners();
+    this.createControls();
     this.loop();
   }
 
@@ -130,22 +133,7 @@ export class Game {
     this.snake.setDirection(dir);
   }
 
-  addEventListeners() {
-    document.addEventListener('keydown', e => {
-      switch (e.key) {
-        case 's':
-          this.setDirection(DIRECTIONS.BOTTOM);
-          break;
-        case 'w':
-          this.setDirection(DIRECTIONS.TOP);
-          break;
-        case 'd':
-          this.setDirection(DIRECTIONS.RIGHT);
-          break;
-        case 'a':
-          this.setDirection(DIRECTIONS.LEFT);
-          break;
-      }
-    });
+  createControls() {
+    this.constrols = ControlsFactory.bootstrap(this.setDirection);
   }
 }
