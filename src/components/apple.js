@@ -1,5 +1,5 @@
 import { Cell } from './cell';
-import { ACCENT } from '../palette';
+import { ACCENT } from '../utils/palette';
 
 export class Apple extends Cell {
   static create(options) {

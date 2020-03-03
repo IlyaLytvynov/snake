@@ -1,39 +1,41 @@
-import { DIRECTIONS } from '../components/snake.js/index.js';
+import { DIRECTIONS } from '../components/snake';
+import { BaseControls } from './baseControls';
 
-export class KeyboardControls {
-  static bootstrap(onSetDirection) {
-    const controls = new KeyboardControls(onSetDirection);
+const KEYS = {
+  UP: 'w',
+  DOWN: 's',
+  LEFT: 'a',
+  RIGHT: 'd'
+};
+export class KeyboardControls extends BaseControls {
+  static bootstrap(onSetDirection, target) {
+    const controls = new KeyboardControls(onSetDirection, target);
     controls.init();
     return controls;
   }
 
-  constructor(onSetDirection) {
-    this.onSetDirection = onSetDirection;
-    this.addEventListeners = this.addEventListeners.bind(this);
-  }
-
   addEventListeners(e) {
     switch (e.key) {
-      case 's':
+      case KEYS.DOWN:
         this.onSetDirection(DIRECTIONS.BOTTOM);
         break;
-      case 'w':
+      case KEYS.UP:
         this.onSetDirection(DIRECTIONS.TOP);
         break;
-      case 'd':
+      case KEYS.RIGHT:
         this.onSetDirection(DIRECTIONS.RIGHT);
         break;
-      case 'a':
+      case KEYS.LEFT:
         this.onSetDirection(DIRECTIONS.LEFT);
         break;
     }
   }
 
   init() {
-    document.addEventListener('keydown', this.addEventListeners);
+    this.target.addEventListener('keydown', this.addEventListeners);
   }
 
   clear() {
-    document.removeEventListener('keydown', this.addEventListeners);
+    this.target.removeEventListener('keydown', this.addEventListeners);
   }
 }

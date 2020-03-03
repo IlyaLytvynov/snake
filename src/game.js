@@ -1,5 +1,5 @@
-import { Stage, GAME_MODES } from './components/stage.js/index.js';
-import { Snake } from './components/snake.js/index.js';
+import { Stage, GAME_MODES } from './components/stage';
+import { Snake } from './components/snake';
 import { ControlsFactory } from './controls/controlsFactory';
 import './game.css';
 
@@ -30,6 +30,11 @@ export class Game {
   init() {
     this.createGameContainer();
     this.createStage();
+    this.fullscreenify();
+  }
+
+  fullscreenify() {
+    this.stage.canvas.scrollIntoView(true);
   }
 
   createGameContainer() {
@@ -95,6 +100,7 @@ export class Game {
   stopGame() {
     window.cancelAnimationFrame(this.requestedFrame);
     this.stage.setMode(GAME_MODES.OVER);
+    this.controls.clear();
   }
 
   renderSnake() {
@@ -134,6 +140,9 @@ export class Game {
   }
 
   createControls() {
-    this.constrols = ControlsFactory.bootstrap(this.setDirection);
+    this.constrols = ControlsFactory.bootstrap(
+      this.setDirection,
+      this.container
+    );
   }
 }

@@ -1,5 +1,5 @@
 import { Text } from './text';
-import { normalizeScore } from '../utils';
+import { normalizeScore } from '../utils/converters';
 export class Score extends Text {
   /**
    * @param {object} options

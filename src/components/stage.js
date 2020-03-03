@@ -1,8 +1,8 @@
 import { GameField } from './gameField';
 import { Score } from './score';
 import { NotificationScreen } from './notificationScreen';
-import { Screen } from '../screen';
-import { sizeGenerator } from '../utils';
+import { Screen } from '../utils/screen';
+import { sizeGenerator } from '../utils/converters';
 /**
  * @typedef Params
  * @param {DOMElement} root
@@ -20,9 +20,7 @@ export class Stage {
    * @param {DOMElement} root
    */
   static create(options) {
-    const { width, height } = Screen.getViewportSize();
-    console.log(width, height);
-    const sizes = sizeGenerator({ width, height });
+    const sizes = sizeGenerator(Screen.getViewportSize());
     const stage = new Stage({ ...options, ...sizes });
     stage.init();
     return stage;
@@ -35,11 +33,12 @@ export class Stage {
    * @param {Number} o.height
    * @param {function} o.onWelcomeScreenClick
    */
-  constructor({ root, onWelcomeScreenClick, width, height, cellSize }) {
+  constructor({ root, onWelcomeScreenClick, width, height, cellSize, scale }) {
     this.root = root;
     this.mode = GAME_MODES.PENDING;
     this.width = width;
     this.height = height;
+    this.scale = scale;
     this.cellSize = cellSize;
     this.onWelcomeScreenClick = onWelcomeScreenClick;
   }
@@ -95,6 +94,7 @@ export class Stage {
   renderWelcomeScreen() {
     this.notificationScreen = NotificationScreen.create({
       canvas: this.canvas,
+      scale: this.scale,
       w: this.width,
       h: this.height,
       textContent: 'START GAME',
@@ -104,9 +104,12 @@ export class Stage {
 
   createCanvas() {
     this.canvas = document.createElement('canvas');
-    this.canvas.width = this.width;
-    this.canvas.height = this.height;
-
+    this.canvas.style.width = `${this.width}px`;
+    this.canvas.style.height = `${this.height}px`;
+    this.canvas.width = this.width * this.scale;
+    this.canvas.height = this.height * this.scale;
+    this.ctx = this.canvas.getContext('2d');
+    this.ctx.scale(this.scale, this.scale);
     this.root.appendChild(this.canvas);
   }
 
@@ -134,6 +137,7 @@ export class Stage {
     this.notificationScreen = NotificationScreen.create({
       canvas: this.canvas,
       textContent: 'GAME OVER',
+      scale: this.scale,
       w: this.width,
       h: this.height,
       textColor: 'magenta',
@@ -144,6 +148,7 @@ export class Stage {
   drawField() {
     this.field = GameField.create({
       canvas: this.canvas,
+      scale: this.scale,
       width: this.width,
       height: this.height,
       cellSize: this.cellSize

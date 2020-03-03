@@ -16,7 +16,7 @@ export const normalizeScore = score => {
   return `${score}`;
 };
 
-export const sizeGenerator = ({ width, height }) => {
+export const sizeGenerator = ({ width, height, scale }) => {
   const CELL_COUNT = 16;
   const cellSize = Math.floor(width / CELL_COUNT);
   const adjustedWidth = cellSize * CELL_COUNT;
@@ -24,6 +24,7 @@ export const sizeGenerator = ({ width, height }) => {
   return {
     cellSize,
     height: adjustedHeight,
-    width: adjustedWidth
+    width: adjustedWidth,
+    scale
   };
 };

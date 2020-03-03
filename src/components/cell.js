@@ -1,21 +1,23 @@
 export class Cell {
-  static createWithColor({ canvas, col, row, w, h, bgColor }) {
-    const cell = new Cell({ canvas, col, row, w, h });
+  static createWithColor({ bgColor, ...options }) {
+    const cell = new Cell(options);
     cell.color = bgColor;
     cell.render();
     return cell;
   }
 
-  static create({ canvas, col, row, w, h }) {
-    const cell = new Cell({ canvas, col, row, w, h });
+  static create(options) {
+    const cell = new Cell(options);
     cell.render();
     return cell;
   }
 
-  constructor({ canvas, col, row, w, h, bgColor = '#FFF' }) {
+  constructor({ canvas, col, row, w, h, scale, bgColor = '#FFF' }) {
     this.ctx = canvas.getContext('2d');
+    this.ctx.scale(scale, scale);
     this.w = w;
     this.h = h;
+    this.scale = scale;
     this.col = col;
     this.row = row;
     this.x = col * this.w;
