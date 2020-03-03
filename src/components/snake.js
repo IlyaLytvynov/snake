@@ -1,5 +1,5 @@
 import { Cell } from './cell.js';
-import { MAIN } from './palette.js';
+import { MAIN } from '../palette.js';
 /**
  * Directions enum
  * @readonly

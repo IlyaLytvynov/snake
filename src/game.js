@@ -1,5 +1,5 @@
-import { Stage, GAME_MODES } from './stage.js';
-import { Snake } from './snake.js';
+import { Stage, GAME_MODES } from './components/stage.js/index.js';
+import { Snake } from './components/snake.js/index.js';
 import { ControlsFactory } from './controls/controlsFactory';
 import './game.css';
 

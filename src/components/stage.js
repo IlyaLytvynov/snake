@@ -1,8 +1,8 @@
 import { GameField } from './gameField';
 import { Score } from './score';
 import { NotificationScreen } from './notificationScreen';
-import { Screen } from './screen';
-import { sizeGenerator } from './utils';
+import { Screen } from '../screen';
+import { sizeGenerator } from '../utils';
 /**
  * @typedef Params
  * @param {DOMElement} root

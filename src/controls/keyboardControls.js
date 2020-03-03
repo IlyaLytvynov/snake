@@ -1,4 +1,4 @@
-import { DIRECTIONS } from '../snake.js';
+import { DIRECTIONS } from '../components/snake.js/index.js';
 
 export class KeyboardControls {
   static bootstrap(onSetDirection) {
