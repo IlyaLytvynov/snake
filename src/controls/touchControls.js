@@ -7,10 +7,6 @@ export class TouchControls extends BaseControls {
     return controls;
   }
 
-  calcDelta(dS, dE) {
-    return dS > dE;
-  }
-
   addEventListeners() {
     this.target.addEventListener('touchstart', e => {
       const [touch] = e.touches;
@@ -18,8 +14,8 @@ export class TouchControls extends BaseControls {
         return;
       }
       const { pageX: x, pageY: y } = touch;
-      this.coordsStart = { x, y };
-      console.log(this.coordsStart);
+      this.startCoords = { x, y };
+      console.log(this.startCoords);
     });
 
     this.target.addEventListener('touchend', e => {
@@ -28,14 +24,43 @@ export class TouchControls extends BaseControls {
         return;
       }
       const { pageX: x, pageY: y } = touch;
-      if (this.coordsStart.y > y) {
-        this.onSetDirection(DIRECTIONS.TOP);
-        return;
-      }
-      if (this.coordsStart.y < y) {
-        this.onSetDirection(DIRECTIONS.BOTTOM);
-      }
+      this.endCoords = { x, y };
+      this.setDirection();
     });
+  }
+
+  setDirection() {
+    const dX = this.calcDelta(this.startCoords.x, this.endCoords.x);
+    const dY = this.calcDelta(this.startCoords.y, this.endCoords.y);
+    console.log(dX, dY);
+    if (Math.abs(dX) > Math.abs(dY)) {
+      this.setHorisontalDirection(dX);
+      return;
+    }
+    this.setVerticalDirection(dY);
+  }
+
+  setHorisontalDirection(dX) {
+    if (dX > 0) {
+      this.onSetDirection(DIRECTIONS.LEFT);
+      return;
+    }
+    this.onSetDirection(DIRECTIONS.RIGHT);
+  }
+
+  setVerticalDirection(dY) {
+    if (dY > 0) {
+      this.onSetDirection(DIRECTIONS.TOP);
+      return;
+    }
+    this.onSetDirection(DIRECTIONS.BOTTOM);
+  }
+
+  calcDelta(prev, current) {
+    if (Math.abs(prev - current) < 10) {
+      return 0;
+    }
+    return prev - current;
   }
 
   init() {

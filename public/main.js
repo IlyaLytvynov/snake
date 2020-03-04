@@ -2301,11 +2301,6 @@ function (_BaseControls) {
   }
 
   _createClass(TouchControls, [{
-    key: "calcDelta",
-    value: function calcDelta(dS, dE) {
-      return dS > dE;
-    }
-  }, {
     key: "addEventListeners",
     value: function addEventListeners() {
       var _this = this;
@@ -2320,11 +2315,11 @@ function (_BaseControls) {
 
         var x = touch.pageX,
             y = touch.pageY;
-        _this.coordsStart = {
+        _this.startCoords = {
           x: x,
           y: y
         };
-        console.log(_this.coordsStart);
+        console.log(_this.startCoords);
       });
       this.target.addEventListener('touchend', function (e) {
         var _e$changedTouches = _slicedToArray(e.changedTouches, 1),
@@ -2336,17 +2331,56 @@ function (_BaseControls) {
 
         var x = touch.pageX,
             y = touch.pageY;
+        _this.endCoords = {
+          x: x,
+          y: y
+        };
 
-        if (_this.coordsStart.y > y) {
-          _this.onSetDirection(_components_snake__WEBPACK_IMPORTED_MODULE_1__["DIRECTIONS"].TOP);
-
-          return;
-        }
-
-        if (_this.coordsStart.y < y) {
-          _this.onSetDirection(_components_snake__WEBPACK_IMPORTED_MODULE_1__["DIRECTIONS"].BOTTOM);
-        }
+        _this.setDirection();
       });
+    }
+  }, {
+    key: "setDirection",
+    value: function setDirection() {
+      var dX = this.calcDelta(this.startCoords.x, this.endCoords.x);
+      var dY = this.calcDelta(this.startCoords.y, this.endCoords.y);
+      console.log(dX, dY);
+
+      if (Math.abs(dX) > Math.abs(dY)) {
+        this.setHorisontalDirection(dX);
+        return;
+      }
+
+      this.setVerticalDirection(dY);
+    }
+  }, {
+    key: "setHorisontalDirection",
+    value: function setHorisontalDirection(dX) {
+      if (dX > 0) {
+        this.onSetDirection(_components_snake__WEBPACK_IMPORTED_MODULE_1__["DIRECTIONS"].LEFT);
+        return;
+      }
+
+      this.onSetDirection(_components_snake__WEBPACK_IMPORTED_MODULE_1__["DIRECTIONS"].RIGHT);
+    }
+  }, {
+    key: "setVerticalDirection",
+    value: function setVerticalDirection(dY) {
+      if (dY > 0) {
+        this.onSetDirection(_components_snake__WEBPACK_IMPORTED_MODULE_1__["DIRECTIONS"].TOP);
+        return;
+      }
+
+      this.onSetDirection(_components_snake__WEBPACK_IMPORTED_MODULE_1__["DIRECTIONS"].BOTTOM);
+    }
+  }, {
+    key: "calcDelta",
+    value: function calcDelta(prev, current) {
+      if (Math.abs(prev - current) < 10) {
+        return 0;
+      }
+
+      return prev - current;
     }
   }, {
     key: "init",
