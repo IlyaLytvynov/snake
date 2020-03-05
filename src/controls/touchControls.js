@@ -7,32 +7,41 @@ export class TouchControls extends BaseControls {
     return controls;
   }
 
-  addEventListeners() {
-    this.target.addEventListener('touchstart', e => {
-      const [touch] = e.touches;
-      if (!touch) {
-        return;
-      }
-      const { pageX: x, pageY: y } = touch;
-      this.startCoords = { x, y };
-      console.log(this.startCoords);
-    });
+  constructor(...options) {
+    super(...options);
+    this.handelToushStart = this.handelToushStart.bind(this);
+    this.handelTouchEnd = this.handelTouchEnd.bind(this);
+  }
 
-    this.target.addEventListener('touchend', e => {
-      const [touch] = e.changedTouches;
-      if (!touch) {
-        return;
-      }
-      const { pageX: x, pageY: y } = touch;
-      this.endCoords = { x, y };
-      this.setDirection();
-    });
+  handelToushStart(e) {
+    const [touch] = e.touches;
+    if (!touch) {
+      return;
+    }
+    const { pageX: x, pageY: y } = touch;
+    this.startCoords = { x, y };
+    console.log(this.startCoords);
+  }
+
+  handelTouchEnd(e) {
+    const [touch] = e.changedTouches;
+    if (!touch) {
+      return;
+    }
+    const { pageX: x, pageY: y } = touch;
+    this.endCoords = { x, y };
+    this.setDirection();
+  }
+
+  addEventListeners() {
+    console.log(this);
+    this.target.addEventListener('touchstart', this.handelToushStart);
+    this.target.addEventListener('touchend', this.handelTouchEnd);
   }
 
   setDirection() {
     const dX = this.calcDelta(this.startCoords.x, this.endCoords.x);
     const dY = this.calcDelta(this.startCoords.y, this.endCoords.y);
-    console.log(dX, dY);
     if (Math.abs(dX) > Math.abs(dY)) {
       this.setHorisontalDirection(dX);
       return;
@@ -68,6 +77,7 @@ export class TouchControls extends BaseControls {
   }
 
   clear() {
-    console.log('CLEAR');
+    this.target.removeEventListener('touchstart', this.handelToushStart);
+    this.target.removeEventListener('touchend', this.handelTouchEnd);
   }
 }

@@ -1,3 +1,5 @@
+import { theme } from '../utils/palette';
+
 export class Cell {
   static createWithColor({ bgColor, ...options }) {
     const cell = new Cell(options);
@@ -12,7 +14,7 @@ export class Cell {
     return cell;
   }
 
-  constructor({ canvas, col, row, w, h, scale, bgColor = '#FFF' }) {
+  constructor({ canvas, col, row, w, h, scale, bgColor = theme.bg }) {
     this.ctx = canvas.getContext('2d');
     this.ctx.scale(scale, scale);
     this.w = w;
@@ -40,7 +42,7 @@ export class Cell {
   render() {
     this.fillStyle = this.bgColor;
     this.ctx.fillRect(this.x, this.y, this.w, this.h);
-    this.ctx.strokeStyle = '#FFF';
+    this.ctx.strokeStyle = theme.bg;
     this.ctx.strokeRect(this.x, this.y, this.w, this.h);
   }
 
@@ -50,6 +52,6 @@ export class Cell {
   }
 
   setDefaultColor() {
-    this.ctx.fillStyle = '#FFF';
+    this.ctx.fillStyle = theme.bg;
   }
 }

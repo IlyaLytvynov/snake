@@ -1,5 +1,5 @@
 import { Cell } from './cell';
-import { ACCENT } from '../utils/palette';
+import { theme } from '../utils/palette';
 
 export class Apple extends Cell {
   static create(options) {
@@ -9,7 +9,7 @@ export class Apple extends Cell {
   }
 
   constructor(options) {
-    super({ ...options, bgColor: ACCENT });
+    super({ ...options, bgColor: theme.apple });
     this.intervalId = null;
   }
 

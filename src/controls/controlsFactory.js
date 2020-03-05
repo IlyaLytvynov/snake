@@ -1,16 +1,12 @@
 import { PlatformParser } from '../utils/platformParser';
 import { KeyboardControls } from './keyboardControls';
 import { TouchControls } from './touchControls';
-export class ControlsFactory {
+import { BaseControls } from './baseControls';
+export class ControlsFactory extends BaseControls {
   static bootstrap(onSetDirection, target) {
     const controls = new ControlsFactory(onSetDirection, target);
     controls.init();
     return controls;
-  }
-
-  constructor(onSetDirection, target) {
-    this.onSetDirection = onSetDirection;
-    this.target = target;
   }
 
   init() {
@@ -24,6 +20,7 @@ export class ControlsFactory {
   }
 
   clear() {
+    console.log('CELARED');
     this.controls.clear();
   }
 }

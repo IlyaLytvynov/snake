@@ -14,7 +14,12 @@ export class KeyboardControls extends BaseControls {
     return controls;
   }
 
-  addEventListeners(e) {
+  constructor(...options) {
+    super(...options);
+    this.setDirection = this.setDirection.bind(this);
+  }
+
+  setDirection(e) {
     switch (e.key) {
       case KEYS.DOWN:
         this.onSetDirection(DIRECTIONS.BOTTOM);
@@ -32,10 +37,10 @@ export class KeyboardControls extends BaseControls {
   }
 
   init() {
-    this.target.addEventListener('keydown', this.addEventListeners);
+    this.target.addEventListener('keydown', this.setDirection);
   }
 
   clear() {
-    this.target.removeEventListener('keydown', this.addEventListeners);
+    this.target.removeEventListener('keydown', this.setDirection);
   }
 }

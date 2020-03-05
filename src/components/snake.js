@@ -1,5 +1,5 @@
 import { Cell } from './cell';
-import { MAIN } from '../utils/palette';
+import { theme } from '../utils/palette';
 /**
  * Directions enum
  * @readonly
@@ -37,7 +37,7 @@ export class Snake {
 
   init() {
     this._segments = [
-      this.createSegment(7, 5, 'red'),
+      this.createSegment(7, 5),
       this.createSegment(6, 5),
       this.createSegment(5, 5)
     ];
@@ -92,7 +92,7 @@ export class Snake {
       row,
       w: this._cellSize,
       h: this._cellSize,
-      bgColor: MAIN
+      bgColor: theme.snake
     });
     return segment;
   }

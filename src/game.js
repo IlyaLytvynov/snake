@@ -21,7 +21,7 @@ export class Game {
     this.root = root;
     this.score = 0;
     this.collision = false;
-    this.fps = 3;
+    this.fps = 4;
     this.lastTime = Date.now();
 
     this.setDirection = this.setDirection.bind(this);
@@ -140,7 +140,7 @@ export class Game {
   }
 
   createControls() {
-    this.constrols = ControlsFactory.bootstrap(
+    this.controls = ControlsFactory.bootstrap(
       this.setDirection,
       this.container
     );
