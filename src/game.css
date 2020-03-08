@@ -1,4 +1,9 @@
+html {
+  overflow: hidden;
+}
 body {
+  -webkit-overflow-scrolling: touch;
+  position: fixed;
   overflow: hidden;
 }
 
