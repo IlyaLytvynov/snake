@@ -8,7 +8,7 @@
     "start:server": "node ./server.js",
     "build": "webpack --mode production",
     "dev": "webpack  --mode development -w",
-    "deploy": "gh-pages -d dist",
+    "deploy": "gh-pages -d public",
     "lint": "eslint src/**",
     "test": "jest"
   },
